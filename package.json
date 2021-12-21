@@ -1,0 +1,17 @@
+{
+  "name": "snowflake-frost-wallet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^16.0.5",
+    "electron-reloader": "^1.2.1"
+  }
+}
