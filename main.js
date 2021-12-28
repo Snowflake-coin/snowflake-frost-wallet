@@ -5,6 +5,7 @@ const loadMainWindow = () => {
     const mainWindow = new BrowserWindow({
         width : 1200,
         height: 600,
+        icon: "logo.png",
         enableRemoteModule: true,
         webPreferences: {
             nodeIntegration: true
