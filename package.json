@@ -10,12 +10,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "dependencies": {
     "electron": "^16.0.5",
     "electron-reloader": "^1.2.1",
     "siphash": "^1.1.0",
-    "turtlecoin-utils": "^3.0.10"
+    "turtlecoin-wallet-backend": "*"
   }
 }
