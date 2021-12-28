@@ -8,7 +8,8 @@ const loadMainWindow = () => {
         icon: "logo.png",
         enableRemoteModule: true,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            contextIsolation: false
         }
     });
 
