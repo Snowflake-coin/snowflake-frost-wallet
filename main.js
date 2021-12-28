@@ -3,7 +3,7 @@ const path = require("path");
 
 const loadMainWindow = () => {
     const mainWindow = new BrowserWindow({
-        width : 1200,
+        width : 1600,
         height: 600,
         icon: "logo.png",
         enableRemoteModule: true,
@@ -12,6 +12,9 @@ const loadMainWindow = () => {
             contextIsolation: false
         }
     });
+
+    // Remove when in production
+    mainWindow.webContents.openDevTools();
 
     mainWindow.loadFile(path.join(__dirname, "/public/index.html"));
 }
