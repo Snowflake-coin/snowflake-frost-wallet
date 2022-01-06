@@ -1,28 +1,31 @@
-const siphash = require('siphash');
+const { ipcRenderer } = require('electron');
+/* const siphash = require("siphash")
 
-let key = siphash.string16_to_key("This is the key!");
-let message = "Short test message";
+let key = siphash.string16_to_key("2D3C40EF00000000");
+let message = "TRANSACTION";
 let hash_hex = siphash.hash_hex(key, message);
+console.log(hash_hex); */
 
-console.log(hash_hex);
+ipcRenderer.send('loadWallet');
 
-const WB = require('turtlecoin-wallet-backend');
+/* Refresh balance and sync status every second */
+setInterval(() => {
+  ipcRenderer.send('updateBalance');
+  ipcRenderer.send('getSyncStatus');
+}, 1000)
 
-(async () => {
-    const daemon = new WB.Daemon('127.0.0.1', 22101);
 
-    const wallet = WB.WalletBackend.createWallet(daemon);
 
-    console.log('Created wallet');
 
-    await wallet.start();
+ipcRenderer.on('getSyncStatus', (event, arg) => {
+  console.log(arg);
+})
 
-    console.log('Started wallet');
 
-    wallet.saveWalletToFile('mywallet.wallet', 'hunter2');
-
-    /* Make sure to call stop to let the node process exit */
-    wallet.stop();
-})().catch(err => {
-    console.log('Caught promise rejection: ' + err);
-});
+// Get address
+ipcRenderer.on('updateBalance', (event, arg) => {
+  console.log('Balance updated!')
+  document.getElementById('receiveAddress').innerHTML = arg.address;
+  document.getElementById('unlockedBalance').innerHTML = arg.unlockedBalance + " SNW";
+  document.getElementById('lockedBalance').innerHTML = arg.lockedBalance + " SNW";
+})
