@@ -1,15 +1,25 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
-const WB = require('turtlecoin-wallet-backend');
+const { Worker, isMainThread, parentPort } = require('worker_threads');
+const { app, BrowserWindow, ipcMain, webContents } = require("electron");
 const path = require("path");
-const fs = require('fs')
 
-const daemon = new WB.Daemon('snowflake-net.com', 22101);
-let wallet;
+const WorkerMessages = require('./src/workerMessages.js');
+const Config = require('./src/config.js');
+const { Logger, setLogSeverity, Severity } = require('./src/logger');
+const workerMessages = require('./src/workerMessages.js');
+
+setLogSeverity(Severity.TRACE);
+const logger = new Logger("Main");
+
+let mainWindow = null
 
 const loadMainWindow = () => {
-  const mainWindow = new BrowserWindow({
-    width: 1700, // 1200
+   mainWindow = new BrowserWindow({
+    width: 1100,
     height: 600,
+    minWidth: 1100,
+    minHeight: 600,
+    frame: false,
+    transparent: true,
     icon: __dirname + '/icon.ico',
     enableRemoteModule: true,
     webPreferences: {
@@ -19,7 +29,7 @@ const loadMainWindow = () => {
   });
 
   // Remove when in production
-  mainWindow.webContents.openDevTools();
+  mainWindow.openDevTools();
 
   mainWindow.loadFile(path.join(__dirname, "/public/index.html"));
 }
@@ -27,13 +37,12 @@ const loadMainWindow = () => {
 app.on("ready", loadMainWindow);
 
 app.on("window-all-closed", () => {
-  (async () => {
-    wallet.saveWalletToFile('wallet.dat', '');
-  
-    if (process.platform !== "darwin") {
-      app.quit();
+  walletBackendWorker.postMessage({
+    type: WorkerMessages.SAVE_WALLET,
+    data: {
+      walletFile: Config.walletFilename
     }
-  })();
+  });
 });
 
 app.on("activate", () => {
@@ -44,40 +53,65 @@ app.on("activate", () => {
 
 
 
+
+const walletBackendWorker = new Worker('./src/workers/wallet-backend.js');
+walletBackendWorker.on('message', ({ type, data }) => {
+  logger.debug('message :>> ', { type, data });
+
+  switch (type) {
+    /* Wallet has been opened */
+    case WorkerMessages.OPENED_WALLET:
+      mainWindow.webContents.send('walletOpened');
+      break;
+
+    /* Get primary address */
+    case WorkerMessages.GET_PRIMARY_ADDRESS:
+      mainWindow.webContents.send('getPrimaryAddress', { address: data.address } );
+      break;
+
+    /* Get balances */
+    case WorkerMessages.GET_BALANCE:
+      mainWindow.webContents.send('getBalances', { unlockedBalance: (data.unlockedBalance / (10 ** Config.decimals)).toFixed(Config.decimals), lockedBalance: (data.lockedBalance / (10 ** Config.decimals)).toFixed(Config.decimals) } );
+      break;
+
+    /* Close App */
+    case workerMessages.CLOSE_APP:    
+      if (process.platform !== "darwin") { app.quit(); }
+      break;
+  }
+});
+
+
+
+
+/* Minimize Window */
+ipcMain.on('minimize', (event) => {
+  mainWindow.minimize();
+});
+
+/* Load wallet */
 ipcMain.on('loadWallet', (event) => {
-  (async () => {
-    console.log(fs.existsSync('./wallet.dat'))
-    try {
-      if (fs.existsSync('./wallet.dat')) {
-        /* Open wallet file without password */
-        const [openedWallet, error] = await WB.WalletBackend.openWalletFromFile(daemon, 'wallet.dat', '');
-
-        // Error on opening wallet
-        if (error) {
-          console.log('Failed to open wallet: ' + error.toString());
-          return;
-        }
-
-        wallet = openedWallet;
-      } else {
-        /* Create wallet file without password */
-        const newWallet = await WB.WalletBackend.createWallet(daemon);
-        wallet.saveWalletToFile('wallet.dat', '');
-
-        wallet = newWallet;
-      }
-    } catch(err) {
-      console.error(err)
+  walletBackendWorker.postMessage({
+    type: WorkerMessages.OPEN_WALLET,
+    data: {
+      walletFile: Config.walletFilename
     }
-    
-    /* Start wallet */
-    await wallet.start();
-
-    //await wallet.reset(10959);
-  })().catch(err => {
-    console.log('Caught promise rejection: ' + err);
   });
 });
+
+/* Get primary address */
+ipcMain.on('getPrimaryAddress', (event) => {
+  walletBackendWorker.postMessage({
+    type: WorkerMessages.GET_PRIMARY_ADDRESS,
+    data: {}
+  });
+});
+
+
+
+
+
+
 
 /* Update balance */
 ipcMain.on('updateBalance', (event) => {
@@ -89,8 +123,8 @@ ipcMain.on('updateBalance', (event) => {
     /* Update balance on frontend */
     event.reply('updateBalance', {
       address: address,
-      unlockedBalance: unlockedBalance / (10**8),
-      lockedBalance: lockedBalance / (10**8)
+      unlockedBalance: unlockedBalance / (10 ** 8),
+      lockedBalance: lockedBalance / (10 ** 8)
     });
   })();
 });
@@ -110,8 +144,6 @@ ipcMain.on('getSyncStatus', (event) => {
 });
 
 
-/*
 try {
-  require('electron-reloader')(module);
+	require('electron-reloader')(module);
 } catch {}
-*/
