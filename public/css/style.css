@@ -3,6 +3,17 @@
   src: url('../fonts/Ubuntu-Regular.ttf') format('truetype');
 }
 
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+input, button, textarea, :focus {
+    outline: none;
+}
+
 body {
   font-family: 'UbuntuSnow';
   font-size: .875rem;
