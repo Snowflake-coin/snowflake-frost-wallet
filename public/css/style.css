@@ -48,8 +48,6 @@ a:focus {
   background: #65a8ff!important;
   border: none;
   border-radius: 0;
-  margin-bottom: 40px;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-btn {
@@ -84,6 +82,8 @@ a:focus {
   background: #65a8ff;
   color: #fff;
   transition: all 0.3s;
+  border-bottom-left-radius:10px;
+  border-top-left-radius:10px;
 }
 
 #sidebar.active {
@@ -93,6 +93,7 @@ a:focus {
 #sidebar .sidebar-header {
   padding: 20px;
   background: #65a8ff;
+  border-top-left-radius: 10px;
 }
 
 #sidebar ul.components {
@@ -214,4 +215,59 @@ a.article:hover {
 .logo-image {
   height:100px;
   width:100px;
+}
+
+.top-card-header {
+  background-color:#65a8ff;
+  height:130px;
+  border-top-right-radius: 10px;
+}
+
+.wallet-card {
+  background: rgb(30,96,184);
+  background: linear-gradient(218deg, rgb(56 128 223) 0%, rgba(88,153,239,1) 99%, rgba(88,153,239,1) 100%);
+  box-shadow: 5px 5px 25px -2px rgb(0 0 0 / 10%);
+  color:#fff;
+  border-radius:10px;
+  padding:8px 11px;
+  width: 200px;
+  height: 110px;
+  margin: 15px 15px;
+}
+
+.wallet-card-disabled {
+  background: linear-gradient(0deg, rgba(238,246,255,1) 0%, rgba(248,253,254,1) 100%);
+  color:#5992dd;
+}
+
+.rest-content {
+  margin-top:50px;
+}
+
+.unlockedBalance {
+  margin-bottom: 10px;
+}
+
+.balanceLogo {
+  height: 17px;
+  position: relative;
+  top: -2px;
+}
+
+.balanceLogo2 {
+  height: 17px;
+  position: relative;
+  top: -2px;
+  right: 0px;
+  margin-right: 2px;
+}
+
+.new-content {
+  background-color: #fff;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.horizontal-scroll {
+  padding-top: 30px;
 }
