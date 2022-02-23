@@ -50,7 +50,7 @@
   "devDependencies": {
     "nodemon": "^2.0.15",
     "electron": "^16.0.5",
-    "electron-builder": "^22.10.5",
+    "electron-builder": "22.10.5",
     "nexe": "^4.0.0-beta.19"
   },
   "dependencies": {
