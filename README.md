@@ -4,3 +4,7 @@
 ![Open Issue Count](https://img.shields.io/github/issues/Snowflake-coin/snowflake-frost-wallet)
 ![License](https://img.shields.io/github/license/Snowflake-coin/snowflake-frost-wallet)
 ![Version](https://img.shields.io/github/v/release/Snowflake-coin/snowflake-frost-wallet)
+
+### Windows Build Status
+
+![Windows Build Status](https://github.com/Snowflake-coin/snowflake-frost-wallet/workflows/Windows%20Build/badge.svg?branch=master)
