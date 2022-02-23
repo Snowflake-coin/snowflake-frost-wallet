@@ -3,5 +3,4 @@ build/
 ideas/
 wallet.dat
 PAYMENT_ID_DATA.md
-package-lock.json
 backend-server/backend-server.exe
