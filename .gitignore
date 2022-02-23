@@ -3,4 +3,4 @@ build/
 ideas/
 wallet.dat
 PAYMENT_ID_DATA.md
-backend-server/backend-server.exe
+backend-server/backend-server*
