@@ -8,3 +8,7 @@
 ### Windows Build Status
 
 ![Windows Build Status](https://github.com/Snowflake-coin/snowflake-frost-wallet/workflows/Windows%20Build/badge.svg?branch=master)
+
+### Linux Build Status
+
+![Windows Build Status](https://github.com/Snowflake-coin/snowflake-frost-wallet/workflows/Linux%20Build/badge.svg?branch=master)
