@@ -7,10 +7,11 @@
     "start": "npm run electron",
     "dev": "cross-env NODE_ENV=dev concurrently \"npm run electron\" \"nodemon -w src/backend-server backend-server/index.js\"",
     "electron": "electron .",
-    "build-win": "node build-win.js"
+    "build-win": "node build-win.js",
+    "build-lin": "node build-lin.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Cryptocat <cryptocat323764@protonmail.com>",
   "license": "ISC",
   "build": {
     "appId": "snowflake.wallet.frost",
@@ -39,6 +40,13 @@
     "win": {
       "target": [
         "nsis"
+      ]
+    },
+    "linux": {
+      "icon": "icon.png",
+      "target": [
+        "AppImage",
+        "deb"
       ]
     },
     "nsis": {
