@@ -35,10 +35,12 @@ app.on("activate", () => {
 });
 
 /* Run backend server executable */
-exec(`backend-server/backend-server${(process.platform === "win32" ? '.exe' : '')}`, function(err, data) {  
-  console.log(err);
-  console.log(data.toString());
-});  
+if(!IS_DEVELOPMENT) {
+  exec(`backend-server/backend-server${(process.platform === "win32" ? '.exe' : '')}`, function(err, data) {  
+    console.log(err);
+    console.log(data.toString());
+  });
+}
 
 /* Start main window */
 app.on("ready", loadMainWindow);
