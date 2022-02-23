@@ -12,9 +12,6 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/font-awesome-pro.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
-  <script>
-    const { ipcRenderer } = require('electron');
-  </script>
 </head>
 
 <body id="body">
@@ -45,24 +42,40 @@
 
       <ul class="list-unstyled components">
         <li>
-          <a href="#">text</a>
+          <a href="#">Dashboard</a>
         </li>
         <li>
-          <a href="#">text</a>
+          <a href="#">Transfer</a>
         </li>
         <li>
-          <a href="#">text</a>
+          <a href="#">Tokens</a>
+        </li>
+        <hr style="margin: 1px 0px; margin-top: 125px">
+        <li>
+          <a href="#">Settings</a>
         </li>
         <li>
-          <a href="#">text</a>
+          <a href="#">Help</a>
         </li>
       </ul>
 
-      <ul class="list-unstyled CTAs">
+      <div style="position:absolute; bottom:6px; left:10px">
+        <div class="row" style="width:250px;">
+          <div class="col-6">
+            <b>BTC: <span class="badge" style="background-color:#5894e3;" id="bitcoinPrice">-</span></b>    
+          </div>
+          <div class="col-6">
+            <b>SNW: <span class="badge" style="background-color:#5894e3;" id="snowflakePrice">-</span></b>
+          </div>
+        </div>
+        
+      </div>
+
+      <!--<ul class="list-unstyled CTAs">
         <li>
           <a href="#" class="download">Settings</a>
         </li>
-      </ul>
+      </ul>-->
     </nav>
 
     <!-- Page Content  -->
@@ -99,7 +112,17 @@
         </div>
 
         <div class="rest-content">
-          Address: <span id="receiveAddress">-</span><br>
+          <div id="">
+
+            <div style="width:calc(100% - 32px); background-color:#65A8FF; margin-left:16px; padding: 6px 6px; border-radius: 10px;">
+              <span style="display:flex; margin-bottom:6px; margin-left:3px; margin-top:2px; color:#fff;">Wallet Address</span>
+              <div style="background-color:#e6f1ff; color:#444; font-size:13px; border-radius:6px; width:100%; padding: 5px 8px;">
+                <span id="receiveAddress">-</span>
+              </div>
+            </div>
+
+          </div>
+        
         </div>
 
       </div>
@@ -111,6 +134,8 @@
 
 
   <script src="js/popper.min.js"></script>
+  <script src="js/socket.io.js"></script>
+  <script src="js/currencyUpdates.js"></script>
   <!--<script src="js/bootstrap.bundle.min.js"></script>-->
   <script src="js/backend/backend.js"></script>
   <script>

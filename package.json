@@ -4,18 +4,62 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run electron",
+    "dev": "cross-env NODE_ENV=dev concurrently \"npm run electron\" \"nodemon -w src/backend-server backend-server/index.js\"",
+    "electron": "electron .",
+    "build-win": "node build-win.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {},
+  "build": {
+    "appId": "snowflake.wallet.frost",
+    "productName": "Snowflake Frost Wallet",
+    "files": [
+      "public/",
+      "src/",
+      "backend-server/backend-server.exe",
+      "icon.ico",
+      "main.js",
+      "package.json",
+      "wallet.dat"
+    ],
+    "extraResources": [
+      {
+        "from": "./backend-server/backend-server.exe",
+        "to": "../backend-server/backend-server.exe",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "directories": {
+      "output": "build"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "electron": "^16.0.5",
+    "nexe": "^4.0.0-beta.19"
+  },
   "dependencies": {
     "chalk": "^4.1.2",
-    "electron": "^16.0.5",
-    "electron-reloader": "^1.2.1",
+    "concurrently": "^7.0.0",
+    "cross-env": "^7.0.3",
+    "electron-reloader": "^1.2.3",
     "siphash": "^1.1.0",
+    "socket.io": "^3",
+    "socket.io-client": "^3",
     "turtlecoin-wallet-backend": "https://github.com/Snowflake-coin/snowflake-wallet-backend-js#master"
   }
 }

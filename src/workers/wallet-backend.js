@@ -70,7 +70,7 @@ async function openWallet(walletFile) {
     } else {
       /* Create wallet file without password */
       const newWallet = WB.WalletBackend.createWallet(daemon);
-      wallet.saveWalletToFile('./' + walletFile, '');
+      newWallet.saveWalletToFile('./' + walletFile, '');
 
       wallet = newWallet;
     }
@@ -79,14 +79,15 @@ async function openWallet(walletFile) {
 
     return;
   }
+  wallet.setLogLevel(WB.LogLevel.DEBUG);
 
   /* Start wallet */
   await wallet.start();
 
-  //wallet.reset(10940);
+  // console.log(wallet.getTransactions(0));
 
   /* Get primary address */
-  let primaryAddress = await getPrimaryAddress();
+  let primaryAddress = await getPrimaryAddress(0);
   parentPort.postMessage({ type: WorkerMessages.GET_PRIMARY_ADDRESS, data: { address: primaryAddress } })
   
   /* Get balance */
@@ -107,4 +108,6 @@ async function openWallet(walletFile) {
     const [walletBlockCount, localDaemonBlockCount, networkBlockCount] = wallet.getSyncStatus();
     logger.debug(`Synced: ${walletBlockCount}/${localDaemonBlockCount}`);
   }, 3000);
+
+  await wallet.reset(10940);
 }

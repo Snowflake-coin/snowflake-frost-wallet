@@ -1,23 +1,18 @@
-const { Worker, isMainThread, parentPort } = require('worker_threads');
-const { app, BrowserWindow, ipcMain, webContents } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
+const exec = require('child_process').execFile;
 
-const WorkerMessages = require('./src/workerMessages.js');
-const Config = require('./src/config.js');
-const { Logger, setLogSeverity, Severity } = require('./src/logger');
-const workerMessages = require('./src/workerMessages.js');
+const IS_DEVELOPMENT = process.env.NODE_ENV === 'dev';
 
-setLogSeverity(Severity.TRACE);
-const logger = new Logger("Main");
-
-let mainWindow = null
-
+/* Main window */
+let mainWindow = null;
 const loadMainWindow = () => {
    mainWindow = new BrowserWindow({
     width: 1100,
     height: 600,
     minWidth: 1100,
     minHeight: 600,
+    resizable: false,
     frame: false,
     transparent: true,
     icon: __dirname + '/icon.ico',
@@ -28,22 +23,10 @@ const loadMainWindow = () => {
     }
   });
 
-  // Remove when in production
-  mainWindow.openDevTools();
+  if(IS_DEVELOPMENT) mainWindow.openDevTools();
 
   mainWindow.loadFile(path.join(__dirname, "/public/index.html"));
 }
-
-app.on("ready", loadMainWindow);
-
-app.on("window-all-closed", () => {
-  walletBackendWorker.postMessage({
-    type: WorkerMessages.SAVE_WALLET,
-    data: {
-      walletFile: Config.walletFilename
-    }
-  });
-});
 
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
@@ -51,99 +34,25 @@ app.on("activate", () => {
   }
 });
 
+/* Run backend server executable */
+exec('backend-server/backend-server.exe', function(err, data) {  
+  console.log(err);
+  console.log(data.toString());
+});  
 
-
-
-const walletBackendWorker = new Worker('./src/workers/wallet-backend.js');
-walletBackendWorker.on('message', ({ type, data }) => {
-  logger.debug('message :>> ', { type, data });
-
-  switch (type) {
-    /* Wallet has been opened */
-    case WorkerMessages.OPENED_WALLET:
-      mainWindow.webContents.send('walletOpened');
-      break;
-
-    /* Get primary address */
-    case WorkerMessages.GET_PRIMARY_ADDRESS:
-      mainWindow.webContents.send('getPrimaryAddress', { address: data.address } );
-      break;
-
-    /* Get balances */
-    case WorkerMessages.GET_BALANCE:
-      mainWindow.webContents.send('getBalances', { unlockedBalance: (data.unlockedBalance / (10 ** Config.decimals)).toFixed(Config.decimals), lockedBalance: (data.lockedBalance / (10 ** Config.decimals)).toFixed(Config.decimals) } );
-      break;
-
-    /* Close App */
-    case workerMessages.CLOSE_APP:    
-      if (process.platform !== "darwin") { app.quit(); }
-      break;
-  }
-});
-
-
-
+/* Start main window */
+app.on("ready", loadMainWindow);
 
 /* Minimize Window */
 ipcMain.on('minimize', (event) => {
   mainWindow.minimize();
 });
 
-/* Load wallet */
-ipcMain.on('loadWallet', (event) => {
-  walletBackendWorker.postMessage({
-    type: WorkerMessages.OPEN_WALLET,
-    data: {
-      walletFile: Config.walletFilename
-    }
-  });
+/* Minimize Window */
+ipcMain.on('exit', (event) => {
+  process.exit();
 });
-
-/* Get primary address */
-ipcMain.on('getPrimaryAddress', (event) => {
-  walletBackendWorker.postMessage({
-    type: WorkerMessages.GET_PRIMARY_ADDRESS,
-    data: {}
-  });
-});
-
-
-
-
-
-
-
-/* Update balance */
-ipcMain.on('updateBalance', (event) => {
-  (async () => {
-    /* Get balance and address */
-    const [unlockedBalance, lockedBalance] = await wallet.getBalance();
-    const address = await wallet.getPrimaryAddress();
-
-    /* Update balance on frontend */
-    event.reply('updateBalance', {
-      address: address,
-      unlockedBalance: unlockedBalance / (10 ** 8),
-      lockedBalance: lockedBalance / (10 ** 8)
-    });
-  })();
-});
-
-/* Update sync status */
-ipcMain.on('getSyncStatus', (event) => {
-  (async () => {
-    const [walletBlockCount, localDaemonBlockCount, networkBlockCount] = wallet.getSyncStatus();
-
-    /* Update balance on frontend */
-    event.reply('getSyncStatus', {
-      walletBlockCount: walletBlockCount,
-      localDaemonBlockCount: localDaemonBlockCount,
-      networkBlockCount: networkBlockCount
-    });
-  })();
-});
-
 
 try {
-	require('electron-reloader')(module);
+	if(IS_DEVELOPMENT) require('electron-reloader')(module);
 } catch {}
