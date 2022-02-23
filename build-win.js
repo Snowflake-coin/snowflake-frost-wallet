@@ -41,4 +41,4 @@ const runCommand = async (command, backend_builder) => {
   await new Promise((res) => proc.once('close', (n) => res()));
 }
 
-runCommand('nexe backend-server/index.js -o backend-server/backend-server.exe', true).then(() => runCommand('electron-builder'));
+runCommand('.\\node_modules\\.bin\\nexe backend-server/index.js -o backend-server/backend-server.exe', true).then(() => runCommand('.\\node_modules\\.bin\\electron-builder'));
