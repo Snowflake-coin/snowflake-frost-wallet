@@ -1,5 +1,6 @@
 const WB = require('turtlecoin-wallet-backend');
 const fs = require('fs');
+const fetch = require('node-fetch');
 
 const httpServer = require("http").createServer();
 const io = require("socket.io")(httpServer);
@@ -7,6 +8,7 @@ const io = require("socket.io")(httpServer);
 const Config = require('./config.js');
 const { Logger, setLogSeverity, Severity } = require('./logger');
 const logger = new Logger("WalletBackend");
+const logger_sfp = new Logger("SFP-Backend");
 setLogSeverity(Severity.TRACE);
 
 const IS_DEVELOPMENT = process.env.NODE_ENV === 'dev';
@@ -36,11 +38,62 @@ let secKey = '';
       }
     });
 
+    /* Exit the app */
     socket.on("exitApp", async data => {
       if(secKey == data.key) {
         await wallet.saveWalletToFile(Config.walletFilename, '');
         logger.debug(`Wallet saved!`);
         process.exit();
+      }
+    });
+
+    /* Send transactions to frontend */
+    socket.on("getTransactions", async data => {
+      if(secKey == data.key) {
+        let transactions = await wallet.getTransactions();
+        socket.emit('getTransactions', transactions);
+      }
+    });
+
+    /* Get private keys */
+    socket.on("getPrivKeys", async data => {
+      if(secKey == data.key) {
+        const privateViewKey = wallet.getPrivateViewKey();
+        const [publicSpendKey, privateSpendKey, err] = await wallet.getSpendKeys(wallet.getAddresses()[0]);
+
+        socket.emit("getPrivKeys", {
+          privateViewKey,
+          privateSpendKey,
+        });
+      }
+    });
+
+
+
+    /* SFP: Activate wallet */
+    socket.on("sfpActivateWallet", async data => {
+      if(secKey == data.key) {
+        const privateViewKey = wallet.getPrivateViewKey();
+        const [publicSpendKey, privateSpendKey, err] = await wallet.getSpendKeys(wallet.getAddresses()[0]);
+
+        const activation = await sfp_api('/wallet/activate', { private_spend_key: privateSpendKey, private_view_key: privateViewKey });
+        logger_sfp.debug(`Address activation success: ${activation.result.success}`);
+
+        socket.emit("sfpActivateWallet", {
+          activation_success: activation.result.success
+        });
+      }
+    });
+
+    /* SFP: Get all tokens */
+    socket.on("sfpGetTokens", async data => {
+      if(secKey == data.key) {
+        const allTokens = await sfp_api('/tokens');
+        logger_sfp.debug(`Got a total of '0' tokens`);
+
+        socket.emit("sfpGetTokens", {
+          tokens: allTokens.result
+        });
       }
     });
   });
@@ -51,8 +104,24 @@ let secKey = '';
 
   
 
+  /* SFP API */
+  async function sfp_api(request, data) {
+    if(data) {
+      let response = await fetch(`${Config.sfpProtocol}://${Config.sfpHostname}:${Config.sfpPort}/${Config.sfpVersion}${request}`, {
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": JSON.stringify(data)
+      });
+      return response.json();
+    } else {
+      let response = await fetch(`${Config.sfpProtocol}://${Config.sfpHostname}:${Config.sfpPort}/${Config.sfpVersion}${request}`);
+      return response.json();
+    }
+  }
 
-
+  /* Get balances from WalletBackend */
   async function getBalance() {
     const [unlockedBalance, lockedBalance] = await wallet.getBalance();
 
@@ -62,6 +131,7 @@ let secKey = '';
     logger.debug(`Unlocked Balance: ${(unlockedBalance / (10 ** Config.decimals)).toFixed(8)} ${Config.ticker}, Locked Balance: ${(lockedBalance / (10 ** Config.decimals)).toFixed(8)} ${Config.ticker}`);
   }
 
+  /* Open wallet (create if it does not exist) and set syncing events */
   async function openWallet(walletFile) {
     try {
       if (fs.existsSync('./' + walletFile)) {
@@ -83,24 +153,24 @@ let secKey = '';
         wallet = newWallet;
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
 
       return;
     }
 
     await wallet.start();
 
-    wallet.on('incomingtx', async (transaction) => getBalance());
-    wallet.on('outgoingtx', async (transaction) => getBalance());
+    wallet.on('incomingtx', async (transaction) => { getBalance(); io.emit('getNewTransaction', transaction); });
+    wallet.on('outgoingtx', async (transaction) => { getBalance(); io.emit('getNewTransaction', transaction); });
 
     setInterval(() => {
       const [walletBlockCount, localDaemonBlockCount, networkBlockCount] = wallet.getSyncStatus();
-      logger.debug(`SWAG Synced: ${walletBlockCount}/${localDaemonBlockCount}`);
+      logger.debug(`Synced: ${walletBlockCount}/${localDaemonBlockCount}`);
     }, 3000);
 
     //await wallet.reset(10940);
   }
 
-  /* Open wallet */
+  /* Open wallet call */
   openWallet(Config.walletFilename);
 })();
