@@ -63,10 +63,6 @@ a:focus {
   margin: 40px 0;
 }
 
-/* ---------------------------------------------------
-  SIDEBAR STYLE
------------------------------------------------------ */
-
 .wrapper {
   display: flex;
   width: 100%;
@@ -96,10 +92,6 @@ a:focus {
   border-top-left-radius: 10px;
 }
 
-#sidebar ul.components {
-  /*border-bottom: 1px solid #47748b;*/
-}
-
 #sidebar ul p {
   color: #fff;
   padding: 10px;
@@ -112,6 +104,11 @@ a:focus {
 }
 
 #sidebar ul li a:hover {
+  color: #65a8ff;
+  background: #fff;
+}
+
+#sidebar ul li .hover {
   color: #65a8ff;
   background: #fff;
 }
@@ -163,10 +160,6 @@ a.article:hover {
   color: #fff !important;
 }
 
-/* ---------------------------------------------------
-  CONTENT STYLE
------------------------------------------------------ */
-
 #content {
   width: calc(100% - 250px);
   padding: 40px;
@@ -180,28 +173,6 @@ a.article:hover {
 #content.active {
   width: 100%;
 }
-
-/* ---------------------------------------------------
-  MEDIAQUERIES
------------------------------------------------------ */
-
-/*@media (max-width: 768px) {
-  #sidebar {
-      margin-left: -250px;
-  }
-  #sidebar.active {
-      margin-left: 0;
-  }
-  #content {
-      width: 100%;
-  }
-  #content.active {
-      width: calc(100% - 250px);
-  }
-  #sidebarCollapse span {
-      display: none;
-  }
-}*/
 
 .logo-h3 {
   line-height:16px;
@@ -223,16 +194,24 @@ a.article:hover {
   border-top-right-radius: 10px;
 }
 
-.wallet-card {
+.wallet-card-bg {
   background: rgb(30,96,184);
   background: linear-gradient(218deg, rgb(56 128 223) 0%, rgba(88,153,239,1) 99%, rgba(88,153,239,1) 100%);
   box-shadow: 5px 5px 25px -2px rgb(0 0 0 / 10%);
   color:#fff;
   border-radius:10px;
-  padding:8px 11px;
   width: 200px;
   height: 110px;
   margin: 15px 15px;
+  margin-right:5px;
+}
+
+.wallet-card-bg:hover {
+  color:#fff;
+}
+
+.wallet-wrapper {
+  padding:8px 11px;
 }
 
 .wallet-card-disabled {
@@ -240,8 +219,19 @@ a.article:hover {
   color:#5992dd;
 }
 
+.wallet-card {
+  border-radius:10px;
+  transition: all 0.2s ease-out;
+}
+
+.wallet-card:hover {
+  border-radius:9px;
+  background: #5394e9;
+  cursor:pointer;
+}
+
 .rest-content {
-  margin-top:50px;
+  margin-top:43px;
 }
 
 .unlockedBalance {
@@ -270,4 +260,33 @@ a.article:hover {
 
 .horizontal-scroll {
   padding-top: 30px;
+}
+
+.hoverTx {
+  transition: all 0.2s ease-out;
+}
+
+.hoverTx:hover {
+  background-color:#e8e8e8;
+  cursor:pointer;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 5px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #c4c4c4; 
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #b8b8b8;
 }
