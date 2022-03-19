@@ -55,6 +55,8 @@ ipcMain.on('exit', (event) => {
   process.exit();
 });
 
+
+
 try {
 	if(IS_DEVELOPMENT) require('electron-reloader')(module);
 } catch {}
