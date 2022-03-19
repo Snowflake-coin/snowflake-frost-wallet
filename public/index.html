@@ -12,6 +12,7 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/font-awesome-pro.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
+  <link href="css/pagination.css" rel="stylesheet">
 </head>
 
 <body id="body">
@@ -34,7 +35,7 @@
     <nav id="sidebar">
       <div class="sidebar-header">
         <h3 class="logo-h3">
-          <center><img src="images/logo_white.png" class="logo-image"></center><br>
+          <center><img src="images/logo_white.png" class="logo-image" /></center><br>
           Snowflake Frost<br>
           <span class="logo-version">v1.0.0 Panda</span>
         </h3>
@@ -42,17 +43,20 @@
 
       <ul class="list-unstyled components">
         <li>
-          <a href="#">Dashboard</a>
+          <a href="#" onclick="switchPage(this)" id="aDashboard" class="hover">Dashboard</a>
         </li>
         <li>
-          <a href="#">Transfer</a>
+          <a href="#" onclick="switchPage(this)" id="aSend">Send</a>
         </li>
         <li>
-          <a href="#">Tokens</a>
+          <a href="#" onclick="switchPage(this)" id="aReceive">Receive</a>
+        </li>
+        <li>
+          <a href="#" onclick="switchPage(this)" id="aTokens">Tokens</a>
         </li>
         <hr style="margin: 1px 0px; margin-top: 125px">
         <li>
-          <a href="#">Settings</a>
+          <a href="#" onclick="switchPage(this)" id="aSettings">Settings</a>
         </li>
         <li>
           <a href="#">Help</a>
@@ -84,46 +88,116 @@
       <div class="content">
         <div class="top-card-header">
           <div class="horizontal-scroll d-flex">
-            <div class="wallet-card">
-              <div class="unlockedBalance">
-                <span class="fw-bold">Balance</span><br>
-                <span id="unlockedBalance">-</span>
-              </div>
 
-              <div class="">
-                <span class="fw-bold">Locked Balance</span><br>
-                <span id="lockedBalance">-</span>
+            <div class="wallet-card-bg" onclick="switchCoin(this)" onmouseenter="hoverCoin(this, true)" onmouseleave="hoverCoin(this, false)" id="snw">
+              <div class="wallet-card">
+                <div class="wallet-wrapper">
+                  <div class="unlockedBalance">
+                    <span class="fw-bold">Balance</span><br>
+                    <span id="unlockedBalance">-</span>
+                  </div>
+
+                  <div>
+                    <span class="fw-bold">Locked Balance</span><br>
+                    <span id="lockedBalance">-</span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="wallet-card wallet-card-disabled">
-              <div class="unlockedBalance">
-                <span class="fw-bold">Balance</span><br>
-                <span><img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/BTC_Logo.svg/2000px-BTC_Logo.svg.png' class='balanceLogo'> 0.15829538 BTC</span>
-              </div>
+            <div class="wallet-card-bg wallet-card-disabled" onclick="switchCoin(this)" onmouseenter="hoverCoin(this, true)" onmouseleave="hoverCoin(this, false)" id="btc">
+              <div class="wallet-card">
+                <div class="wallet-wrapper">
+                  <div class="unlockedBalance">
+                    <span class="fw-bold">Balance</span><br>
+                    <span><img src='images/coins/btc.png' class='balanceLogo'> 0.15829538 BTC</span>
+                  </div>
 
-              <div class="">
-                <span class="fw-bold">Locked Balance</span><br>
-                <span><img src='https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/BTC_Logo.svg/2000px-BTC_Logo.svg.png' class='balanceLogo2'> 0.00000000 BTC</span>
+                  <div class="">
+                    <span class="fw-bold">Locked Balance</span><br>
+                    <span><img src='images/coins/btc.png' class='balanceLogo2'> 0.00000000 BTC</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="wallet-card-bg wallet-card-disabled" onclick="switchCoin(this)" onmouseenter="hoverCoin(this, true)" onmouseleave="hoverCoin(this, false)" id="ltc">
+              <div class="wallet-card">
+                <div class="wallet-wrapper">
+                  <div class="unlockedBalance">
+                    <span class="fw-bold">Balance</span><br>
+                    <span><img src='images/coins/ltc.png' id='ltc' class='balanceLogo'> 0.15829538 LTC</span>
+                  </div>
+
+                  <div class="">
+                    <span class="fw-bold">Locked Balance</span><br>
+                    <span><img src='images/coins/ltc.png' id='ltc' class='balanceLogo2'> 0.00000000 LTC</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
         </div>
 
-        <div class="rest-content">
-          <div id="">
+        <div class="rest-content d-none" id="dashboardPage">
+          <div style="width:calc(100% - 32px); margin-left:16px;">
+            <div class="">
+              <button class="btn btn-success">Send</button>
+              <button class="btn btn-success">Receive</button>
+            </div>
 
-            <div style="width:calc(100% - 32px); background-color:#65A8FF; margin-left:16px; padding: 6px 6px; border-radius: 10px;">
-              <span style="display:flex; margin-bottom:6px; margin-left:3px; margin-top:2px; color:#fff;">Wallet Address</span>
-              <div style="background-color:#e6f1ff; color:#444; font-size:13px; border-radius:6px; width:100%; padding: 5px 8px;">
-                <span id="receiveAddress">-</span>
-              </div>
+            <div class="transactions">
+              <div id="data-container" style="height: 296px;overflow:auto;margin-left: -16px;margin-right: -16px;margin-top: 13px;"></div>
+              <div id="pagination-container"></div>
             </div>
 
           </div>
-        
         </div>
+
+
+        <div class="rest-content d-none" id="sendPage">
+          <div style="width:calc(100% - 32px); margin-left:16px;">
+          </div>
+        </div>
+
+
+        <div class="rest-content d-none" id="receivePage">
+          <div style="width:calc(100% - 32px); margin-left:16px;">
+          </div>
+        </div>
+
+
+        <div class="rest-content d-none" id="tokensPage">
+          <div style="width:calc(100% - 32px); margin-left:16px;">
+
+            <table class="table" id="tokensList">
+              <thead>
+                <tr>
+                  <th scope="col">Token Name</th>
+                  <th scope="col">Balance</th>
+                  <th scope="col">Supply</th>
+                  <th scope="col">Circulating Supply</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Marketcap</th>
+                  <th scope="col">24h Change</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+
+
+        <div class="rest-content d-none" id="settingsPage">
+          <div style="width:calc(100% - 32px); margin-left:16px;">
+          </div>
+        </div>
+
+
 
       </div>
     </div>
@@ -133,11 +207,17 @@
 
 
 
+  <script src="js/bootstrap.bundle.min.js"></script>
   <script src="js/popper.min.js"></script>
+  <script src="js/pagination.js"></script>
   <script src="js/socket.io.js"></script>
+  <script src="js/pretty.js"></script>
+
+  <script src="js/pageSwitcher.js"></script>
   <script src="js/currencyUpdates.js"></script>
-  <!--<script src="js/bootstrap.bundle.min.js"></script>-->
   <script src="js/backend/backend.js"></script>
+  <script src="js/switchCoin.js"></script>
+
   <script>
     /* $(document).ready(function () {
       $("#sidebar").mCustomScrollbar({
@@ -153,4 +233,4 @@
   </script>
 </body>
 
-</html>>
+</html>
