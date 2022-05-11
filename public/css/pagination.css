@@ -120,7 +120,7 @@
 
 .paginationjs.paginationjs-theme-blue .paginationjs-go-input>input[type=text],
 .paginationjs.paginationjs-theme-blue .paginationjs-pages li {
-    border-color: #289de9
+    border-color: #65A8FF
 }
 
 .paginationjs .paginationjs-go-button>input[type=button]:hover {
@@ -226,7 +226,7 @@
 }
 
 .paginationjs.paginationjs-theme-blue .paginationjs-pages li>a {
-    color: #289de9
+    color: #65A8FF
 }
 
 .paginationjs.paginationjs-theme-blue .paginationjs-pages li>a:hover {
@@ -234,7 +234,7 @@
 }
 
 .paginationjs.paginationjs-theme-blue .paginationjs-pages li.active>a {
-    background: #289de9;
+    background: #65A8FF;
     color: #fff
 }
 
@@ -243,8 +243,8 @@
 }
 
 .paginationjs.paginationjs-theme-blue .paginationjs-go-button>input[type=button] {
-    background: #289de9;
-    border-color: #289de9;
+    background: #65A8FF;
+    border-color: #65A8FF;
     color: #fff
 }
 
