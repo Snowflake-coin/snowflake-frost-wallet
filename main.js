@@ -8,7 +8,7 @@ const IS_DEVELOPMENT = process.env.NODE_ENV === 'dev';
 let mainWindow = null;
 const loadMainWindow = () => {
    mainWindow = new BrowserWindow({
-    width: 1100,
+    width: 1250,
     height: 600,
     minWidth: 1100,
     minHeight: 600,
@@ -19,7 +19,8 @@ const loadMainWindow = () => {
     enableRemoteModule: true,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      enableRemoteModule: true
     }
   });
 
