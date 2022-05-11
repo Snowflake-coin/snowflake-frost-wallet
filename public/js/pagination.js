@@ -257,7 +257,7 @@
         }
 
         if (showPrevious || showPageNumbers || showNext) {
-          html += '<div class="paginationjs-pages">';
+          html += '<div class="paginationjs-pages" id="paginationjs-pages">';
 
           if (ulClassName) {
             html += '<ul class="' + ulClassName + '">';
