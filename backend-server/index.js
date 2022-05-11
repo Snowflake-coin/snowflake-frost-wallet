@@ -98,7 +98,7 @@ let hashedPrivKey;
           
               /* Return connection success */
               socket.emit("sfpConnection", true);
-              logger_sfp.debug(socket, `Request '/${Config.sfpVersion}/transaction/${transactions[tx].paymentID}' success request`);
+              logger_sfp.debug(io, `Request '/${Config.sfpVersion}/transaction/${transactions[tx].paymentID}' success request`);
             } catch(e) {
               logger_sfp.error(socket, `Request '/${Config.sfpVersion}/transaction/${transactions[tx].paymentID}' failed to SFP Node`);
     
@@ -231,14 +231,14 @@ let hashedPrivKey;
             createTransaction.result.transaction_hash // Payment ID
           );
 
-          logger_sfp.debug(socket, `Sending: ${parseFloat(data.amount).toFixed(sendToken.decimals)} ${sendToken.ticker} (${data.amount * (10**sendToken.decimals)}) with ${parseFloat(createTransaction.result.snw_fee / (10**sendToken.decimals)).toFixed(sendToken.decimals)} ${sendToken.ticker} (${createTransaction.result.snw_fee}) fee`)
+          logger_sfp.debug(io, `Sending: ${parseFloat(data.amount).toFixed(sendToken.decimals)} ${sendToken.ticker} (${data.amount * (10**sendToken.decimals)}) with ${parseFloat(createTransaction.result.snw_fee / (10**sendToken.decimals)).toFixed(sendToken.decimals)} ${sendToken.ticker} (${createTransaction.result.snw_fee}) fee`)
           
           if (result.success) {
             socket.emit("sendTransaction", {
               status: "success",
               hash: createTransaction.result.transaction_hash
             });
-            logger_sfp.debug(socket, `Transaction sent! ${createTransaction.result.transaction_hash}`);
+            logger_sfp.debug(io, `Transaction sent! ${createTransaction.result.transaction_hash}`);
 
             /* Send new balance */
             const [unlockedBalance, lockedBalance] = await wallet.getBalance();
@@ -337,7 +337,7 @@ let hashedPrivKey;
 
           /* Do request to SFP Node */
           const activation = await Core.sfp_api('/wallet/activate', { private_spend_key: privateSpendKey, private_view_key: privateViewKey });
-          logger_sfp.debug(socket, `Address activation success: ${activation.result.success}`);
+          logger_sfp.debug(io, `Address activation success: ${activation.result.success}`);
 
           /* Activate wallet on SFP */
           socket.emit("sfpActivateWallet", {
@@ -346,7 +346,7 @@ let hashedPrivKey;
           
           /* Return connection success */
           socket.emit("sfpConnection", true);
-          logger_sfp.debug(socket, `Request '/${Config.sfpVersion}/wallet/activate' success request`);
+          logger_sfp.debug(io, `Request '/${Config.sfpVersion}/wallet/activate' success request`);
         } catch(e) {
           logger_sfp.error(socket, `Request '/${Config.sfpVersion}/wallet/activate' failed to SFP Node`);
 
@@ -363,7 +363,7 @@ let hashedPrivKey;
           /* Get tokens from SFP Node */
           const allTokens = await Core.sfp_api('/tokens');
           let allTokensC = 0; for (let tokens in allTokens.result) { allTokensC++; }
-          logger_sfp.debug(socket, `Got a total of '${allTokensC}' token(s)`);
+          logger_sfp.debug(io, `Got a total of '${allTokensC}' token(s)`);
 
           /* Make all tokens ready for global use */
           allTokensArr = allTokens;
@@ -375,7 +375,7 @@ let hashedPrivKey;
           
           /* Return connection success */
           socket.emit("sfpConnection", true);
-          logger_sfp.debug(socket, `Request '/${Config.sfpVersion}/tokens' success request`);
+          logger_sfp.debug(io, `Request '/${Config.sfpVersion}/tokens' success request`);
         } catch(e) {
           logger_sfp.error(socket, `Request '/${Config.sfpVersion}/tokens' failed to SFP Node`);
 
@@ -405,7 +405,7 @@ let hashedPrivKey;
           
           /* Return connection success */
           socket.emit("sfpConnection", true);
-          logger_sfp.debug(socket, `Request '/${Config.sfpVersion}/tokens/balances' success request`);
+          logger_sfp.debug(io, `Request '/${Config.sfpVersion}/tokens/balances' success request`);
         } catch(e) {
           logger_sfp.error(socket, `Request '/${Config.sfpVersion}/tokens/balances' failed to SFP Node`);
 
@@ -432,7 +432,7 @@ let hashedPrivKey;
           
           /* Return connection success */
           socket.emit("sfpConnection", true);
-          logger_sfp.debug(socket, `Request '/${Config.sfpVersion}/token_price' success request`);
+          logger_sfp.debug(io, `Request '/${Config.sfpVersion}/token_price' success request`);
         } catch(e) {
           logger_sfp.error(socket, `Request '/${Config.sfpVersion}/token_price' failed to SFP Node`);
 
@@ -456,7 +456,7 @@ let hashedPrivKey;
           
           /* Return connection success */
           socket.emit("sfpConnection", true);
-          logger_sfp.debug(socket, `Request '/${Config.sfpVersion}/transaction_fee' success request`);
+          logger_sfp.debug(io, `Request '/${Config.sfpVersion}/transaction_fee' success request`);
         } catch(e) {
           logger_sfp.error(socket, `Request '/${Config.sfpVersion}/transaction_fee' failed to SFP Node`);
 
@@ -476,7 +476,7 @@ let hashedPrivKey;
           status: "error",
           message: "Balance is not enough to create a token."
         });
-        logger_sfp.debug(socket, "[CreateToken] Balance is not enough to create a token");
+        logger_sfp.debug(io, "[CreateToken] Balance is not enough to create a token");
         return;
       }
 
@@ -511,7 +511,7 @@ let hashedPrivKey;
             status: "error",
             message: result.error.toString()
           });
-          logger_sfp.debug(socket, "[CreateToken] " + result.error.toString());
+          logger_sfp.debug(io, "[CreateToken] " + result.error.toString());
         }        
       } else if(createToken.status == "error") {
         socket.emit('sfpCreateToken', {
@@ -528,7 +528,7 @@ let hashedPrivKey;
           /* Get my tokens from SFP Node */
           const allTokens = await Core.sfp_api('/tokens/owned', { sign_key: hashedPrivKey });
           let allTokensC = 0; for (let tokens in allTokens.result) { allTokensC++; }
-          logger_sfp.debug(socket, `Got a total of '${allTokensC}' personal token(s)`);
+          logger_sfp.debug(io, `Got a total of '${allTokensC}' personal token(s)`);
 
           /* Return tokens to frontend */
           socket.emit("sfpGetMyTokens", {
@@ -537,7 +537,7 @@ let hashedPrivKey;
           
           /* Return connection success */
           socket.emit("sfpConnection", true);
-          logger_sfp.debug(socket, `Request '/${Config.sfpVersion}/my_tokens' success request`);
+          logger_sfp.debug(io, `Request '/${Config.sfpVersion}/my_tokens' success request`);
         } catch(e) {
           logger_sfp.error(socket, `Request '/${Config.sfpVersion}/my_tokens' failed to SFP Node`);
 
@@ -626,7 +626,7 @@ let hashedPrivKey;
     io.emit('getBalances', { unlockedBalance: (unlockedBalance / (10 ** Config.decimals)).toFixed(8), lockedBalance: (lockedBalance / (10 ** Config.decimals)).toFixed(8) })
     
     /* Logger */
-    logger.debug(socket, `Unlocked Balance: ${(unlockedBalance / (10 ** Config.decimals)).toFixed(8)} ${Config.ticker}, Locked Balance: ${(lockedBalance / (10 ** Config.decimals)).toFixed(8)} ${Config.ticker}`);
+    logger.debug(io, `Unlocked Balance: ${(unlockedBalance / (10 ** Config.decimals)).toFixed(8)} ${Config.ticker}, Locked Balance: ${(lockedBalance / (10 ** Config.decimals)).toFixed(8)} ${Config.ticker}`);
   }
 
   /* Open wallet (create if it does not exist) and set events */
@@ -691,9 +691,9 @@ let hashedPrivKey;
       
           /* Return connection success */
           io.emit("sfpConnection", true);
-          logger_sfp.debug(socket, `Request '/${Config.sfpVersion}/transaction/${transaction.paymentID}' success request`);
+          logger_sfp.debug(io, `Request '/${Config.sfpVersion}/transaction/${transaction.paymentID}' success request`);
         } catch(e) {
-          logger_sfp.error(socket, `Request '/${Config.sfpVersion}/transaction/${transaction.paymentID}' failed to SFP Node`);
+          logger_sfp.error(io, `Request '/${Config.sfpVersion}/transaction/${transaction.paymentID}' failed to SFP Node`);
 
           /* Return connection failed */
           io.emit("sfpConnection", false);
@@ -746,9 +746,9 @@ let hashedPrivKey;
       
           /* Return connection success */
           io.emit("sfpConnection", true);
-          logger_sfp.debug(socket, `Request '/${Config.sfpVersion}/transaction/${transaction.paymentID}' success request`);
+          logger_sfp.debug(io, `Request '/${Config.sfpVersion}/transaction/${transaction.paymentID}' success request`);
         } catch(e) {
-          logger_sfp.error(socket, `Request '/${Config.sfpVersion}/transaction/${transaction.paymentID}' failed to SFP Node`);
+          logger_sfp.error(io, `Request '/${Config.sfpVersion}/transaction/${transaction.paymentID}' failed to SFP Node`);
 
           /* Return connection failed */
           io.emit("sfpConnection", false);

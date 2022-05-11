@@ -1,5 +1,7 @@
 node_modules/
 build/
+backend-server/backend-server
+backend-server/backend-server.exe
 wallet.json
 wallet.dat
 settings.json

@@ -37,7 +37,7 @@ app.on("activate", () => {
 
 /* Run backend server executable */
 if(!IS_DEVELOPMENT) {
-  exec(`backend-server/backend-server${(process.platform === "win32" ? '.exe' : '')}`, function(err, data) {  
+  exec(`${(process.platform === "win32" ? '' : './')}backend-server/backend-server${(process.platform === "win32" ? '.exe' : '')}`, function(err, data) {  
     console.log(err);
     console.log(data.toString());
   });
@@ -51,7 +51,7 @@ ipcMain.on('minimize', (event) => {
   mainWindow.minimize();
 });
 
-/* Minimize Window */
+/* Exit Window */
 ipcMain.on('exit', (event) => {
   process.exit();
 });
