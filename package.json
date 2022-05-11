@@ -17,38 +17,54 @@
   "build": {
     "appId": "snowflake.wallet.frost",
     "productName": "Snowflake Frost Wallet",
-    "files": [
-      "public/",
-      "src/",
-      "backend-server/backend-server.exe",
-      "icon.ico",
-      "main.js",
-      "package.json",
-      "wallet.dat",
-      "settings.json"
-    ],
-    "extraResources": [
-      {
-        "from": "./backend-server/backend-server.exe",
-        "to": "../backend-server/backend-server.exe",
-        "filter": [
-          "**/*"
-        ]
-      }
-    ],
     "directories": {
       "output": "build"
     },
     "win": {
       "target": [
         "nsis"
+      ],
+      "files": [
+        "public/",
+        "src/",
+        "backend-server/backend-server.exe",
+        "icon.ico",
+        "main.js",
+        "package.json",
+        "wallet.dat",
+        "settings.json"
+      ],
+      "extraResources": [
+        {
+          "from": "./backend-server/backend-server.exe",
+          "to": "../backend-server/backend-server.exe",
+          "filter": [
+            "**/*"
+          ]
+        }
       ]
     },
     "linux": {
       "icon": "icon.png",
-      "target": [
-        "AppImage",
-        "deb"
+      "category": "Utility",
+      "files": [
+        "public/",
+        "src/",
+        "backend-server/backend-server",
+        "icon.ico",
+        "main.js",
+        "package.json",
+        "wallet.dat",
+        "settings.json"
+      ],
+      "extraResources": [
+        {
+          "from": "./backend-server/backend-server",
+          "to": "../backend-server/backend-server",
+          "filter": [
+            "**/*"
+          ]
+        }
       ]
     },
     "nsis": {
