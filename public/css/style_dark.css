@@ -1,0 +1,218 @@
+.new-content {
+    color:#e3e3e3;
+}
+
+#sidebar,
+#sidebar .sidebar-header,
+.top-card-header,
+.new-content {
+    background-color:#2f5383;
+}
+
+.top-bar-gradient {
+    background:linear-gradient(180deg, #5382c4 -18%, rgb(101 168 255 / 0%) 100%);
+}
+
+#sidebar ul li .hover,
+#sidebar ul li a:hover {
+    color: #fff;
+    background: #284974;
+}
+
+.wallet-card-bg {
+    background: linear-gradient(218deg, #3c6497 0%, #375d8f 99%, #345a8b 100%);
+}
+
+.wallet-card:hover {
+    background: #3f689c;
+}
+
+.hoverTx:hover,
+.hoverTxC {
+    background-color: #375e90;
+}
+
+.detailsTx {
+    background-color:#396092;
+}
+
+.detailsTx .detailsNames {
+    color:#d9d9d9;
+}
+
+.fiatPrice {
+  color:#fff;
+}
+
+.linkStyle {
+    color:#8abdff;
+}
+
+.balanceNo {
+    color:#74acf5!important;
+}
+
+.walletQR,
+.walletAddressBox {
+    background-color: #3d71b7;
+}
+
+table {
+    color:#e4e4e4!important;
+}
+
+.tokenCostLbl {
+    background-color:#3b6396;
+}
+
+.formElement {
+    background: #3b6396;
+    border: 1px solid #3b6396;
+}
+
+.formElement span {
+    color: #cdcdd5;
+}
+
+.formElement input[type=text] {
+    color: #fbfbff!important;
+}
+
+.starRed {
+    color:#f77a7a!important;
+}
+
+.formElement select,
+.form-select-style {
+    border-color: #6085b3;
+    background-color: #6085b3;
+    color: #fff;
+}
+
+.formElement select:focus {
+    border-color: #6d93c2;
+}
+
+.input-group-style {
+    background-color: #3b6396;
+}
+
+.paginationjs .paginationjs-pages li>a {
+    background: #4f77ab!important;
+    color: #f7f7f7!important;
+}
+
+.paginationjs .paginationjs-pages li {
+    border: 1px solid #4f77ab!important;
+}
+
+.paginationjs .paginationjs-pages li.active {
+    border: 1px solid #648ec4!important;
+}
+
+.paginationjs .paginationjs-pages li.active>a {
+    height: 28px!important;
+}
+
+.btn-theme {
+    background-color: #4d80c3;
+    color: #fff;
+}
+
+.btn-theme:hover {
+    background-color:#4676b6;
+    color:#fff;
+  }
+
+.pSettings {
+    color:#b9b9b9!important;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #4d80c3;
+}
+
+input:checked + .slider {
+    background-color: #4d80c3;
+}
+
+.form-control-style {
+    background-color:#6085b3;
+    border-color:#6085b3;
+    color:#fff;
+}
+
+.menuHR {
+    color:#2f5383;
+}
+
+.nav-tabs .nav-link.active {
+    color: #fff;
+    background-color: #284974;
+    border: 0px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.nav-tabs .nav-link.active:hover,
+.nav-tabs .nav-link.active:focus {
+    border:0px;
+    border-bottom:0xp solid #DEE2E6;
+}
+
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus {
+    border: 1px solid #ffffff00;
+    border-bottom:1px solid #DEE2E6;
+}
+
+.nav-link {
+    color:#fff;
+    transition: background-color .15s ease-in-out, color .15s ease-in-out!important;
+}
+
+.nav-link:hover {
+    color: #e3e3e3;
+}
+
+.tokenCostLbl span {
+    color: #fff;
+}
+
+.tokenPriceStyle {
+    color: #74acf5;
+}
+
+.createTokenConfirmRight {
+    color:#fff;
+}
+
+.modal-content {
+    background-color:#2F5383;
+    border-color:#466b9d!important;
+}
+
+.createTokenConfirmBottom {
+    border-top: 1px solid #466b9d;
+}
+
+.notify-message {
+    background-color:#4D80C3;
+}
+
+.notify-message-error {
+  background-color:#f44545!important;
+}
+
+.sendBalance {
+    color:#fff!important;
+}
+
+.custom-alert {
+    background-color:#3c6396!important;
+    border-color:#466ea3!important;
+}
+
+.form-control-style::placeholder {
+    color:#b6d7ff;
+}
