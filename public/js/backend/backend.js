@@ -46,9 +46,9 @@ $('#minWindow').on('click', function () {
 $('#closeWindow').on('click', function () {
 	if ($('#body').css('opacity') == 0) $('#form').css('opacity', 1);
 	else $('#body').css('opacity', 0);
+	socket.emit('exitApp', { key: secKey });
 
 	setTimeout(() => {
-		socket.emit('exitApp', { key: secKey });
 		ipcRenderer.postMessage('exit');
 	}, 250);
 });
