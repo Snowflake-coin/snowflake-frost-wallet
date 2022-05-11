@@ -1,10 +1,9 @@
 module.exports = {
-  
-  daemonHostname: "127.0.0.1",
+  daemonHostname: "snowflake-net.com",
   daemonPort: 22101,
 
-  sfpProtocol: "http",
-  sfpHostname: "127.0.0.1",
+  sfpProtocol: "https",
+  sfpHostname: "snowflake-net.com",
   sfpPort: 22104,
   sfpVersion: "v1",
 
