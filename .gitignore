@@ -1,7 +1,6 @@
 node_modules/
 build/
-ideas/
-wallet.dat
-INFO.md
-backend-server/backend-server*
+backend-server/
 wallet.json
+wallet.dat
+settings.json
