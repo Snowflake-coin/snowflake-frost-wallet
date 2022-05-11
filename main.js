@@ -59,5 +59,11 @@ ipcMain.on('exit', (event) => {
 
 
 try {
-	if(IS_DEVELOPMENT) require('electron-reloader')(module);
+	if(IS_DEVELOPMENT) require('electron-reloader')(module, {
+    ignore: [
+      'settings.json',
+      'wallet.json',
+      'wallet.dat'
+    ]
+  });
 } catch {}
