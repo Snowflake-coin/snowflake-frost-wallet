@@ -32,5 +32,4 @@ jobs:
       with:
         name: binaries
         path: |
-          build/Snowflake Frost Wallet-1.0.0.AppImage
-          build/snowflake-frost-wallet_1.0.0_amd64.deb
+          build/linux-unpacked/*
