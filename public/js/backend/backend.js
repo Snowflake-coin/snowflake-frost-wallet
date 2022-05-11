@@ -202,6 +202,10 @@ socket.on('switchNode', (data) => {
 	}, 1000);
 });
 
+socket.on('sendLog', (data) => {
+	console.log(data);
+});
+
 /* Get wallet address */
 socket.on('getWalletAddress', (data) => {
 	walletAddressGlobal = data.address;

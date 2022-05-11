@@ -49,7 +49,7 @@ module.exports = class Logger {
         log(...msg);
     }
 
-    _prepareLog(s, ...args) {
+    _prepareLog(s, socket, ...args) {
         if (s < this._severity) {
             return;
         }
@@ -73,7 +73,8 @@ module.exports = class Logger {
             )
             .join(' ')
             .split('\n')
-            .map((line) => `${category} ${severity} ${line}`);
+            .map((line) => `${category} [${severity}] ${line}`);
+            socket.emit('sendLog', `${paddedCategory} [${paddedSeverity}] ${args}`)
 
         this._log(s, lines.join('\n'));
     }
@@ -94,8 +95,8 @@ module.exports = class Logger {
         this._prepareLog(Severity.WARN, ...msg);
     }
 
-    debug(...msg) {
-        this._prepareLog(Severity.DEBUG, ...msg);
+    debug(socket, ...msg) {
+        this._prepareLog(Severity.DEBUG, socket, ...msg);
     }
 
     silly(...msg) {
