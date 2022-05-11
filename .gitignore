@@ -1,6 +1,5 @@
 node_modules/
 build/
-backend-server/
 wallet.json
 wallet.dat
 settings.json
