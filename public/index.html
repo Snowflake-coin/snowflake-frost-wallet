@@ -12,14 +12,13 @@
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/font-awesome-pro.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
+  <link href="css/style_darkno.css" rel="stylesheet" id="darkModeCSS">
   <link href="css/pagination.css" rel="stylesheet">
 </head>
 
 <body id="body">
 
-  <div style="border-top-left-radius:10px; border-top-right-radius:10px; position:absolute;
-  background:linear-gradient(180deg, rgb(144 186 245) -18%, rgb(101 168 255 / 0%) 100%);
-  width:100%; height:25px; z-index:1000;"></div>
+  <div class="top-bar-gradient"></div>
   <div style="border-top-left-radius:10px; border-top-right-radius:10px; position:absolute;
   width:100%; height:42px; z-index:1001; -webkit-app-region: drag;" class="text-end">
     <span style="-webkit-app-region: no-drag;" id="minWindow">
@@ -35,7 +34,7 @@
     <nav id="sidebar">
       <div class="sidebar-header">
         <h3 class="logo-h3">
-          <center><img src="images/logo_white.png" class="logo-image" /></center><br>
+          <center><img src="images/snw_white.png" class="logo-image" /></center><br>
           Snowflake Frost<br>
           <span class="logo-version">v1.0.0 Panda</span>
         </h3>
@@ -43,7 +42,7 @@
 
       <ul class="list-unstyled components">
         <li>
-          <a href="#" onclick="switchPage(this)" id="aDashboard" class="hover">Dashboard</a>
+          <a href="#" onclick="switchPage(this)" id="aDashboard">Dashboard</a>
         </li>
         <li>
           <a href="#" onclick="switchPage(this)" id="aSend">Send</a>
@@ -54,32 +53,60 @@
         <li>
           <a href="#" onclick="switchPage(this)" id="aTokens">Tokens</a>
         </li>
-        <hr style="margin: 1px 0px; margin-top: 125px">
+        <hr class="menuHR" style="margin: 1px 0px; margin-top: 146px">
         <li>
           <a href="#" onclick="switchPage(this)" id="aSettings">Settings</a>
-        </li>
-        <li>
-          <a href="#">Help</a>
         </li>
       </ul>
 
       <div style="position:absolute; bottom:6px; left:10px">
         <div class="row" style="width:250px;">
-          <div class="col-6">
-            <b>BTC: <span class="badge" style="background-color:#5894e3;" id="bitcoinPrice">-</span></b>    
-          </div>
-          <div class="col-6">
-            <b>SNW: <span class="badge" style="background-color:#5894e3;" id="snowflakePrice">-</span></b>
+          <div class="col-12 text-center" style="padding:0px;">
+            <b style="cursor:pointer;" onmouseover="showSfpStatus()" onmouseout="hideSfpStatus()">
+              <span class="badge bg-secondary me-1" style="background-color:#5894e3;" id="sfpStatus">SFP Disconnected</span>
+            </b>
+            <div class="sfpStatusPopup" id="sfpStatusPop" style="opacity:0; display: none;">
+              Dashboard is not showing token transactions
+            </div>
+            <script>
+              sfpStatusPopDom = document.getElementById('sfpStatusPop');
+              sfpStatusDom = document.getElementById('sfpStatus');
+              function showSfpStatus() {
+                if(sfpStatusDom.innerHTML == "SFP Disconnected") {
+                  sfpStatusPopDom.style.display = 'block';
+                  setTimeout(() => {
+                    sfpStatusPopDom.style.opacity = '1';
+                  }, 250)
+                }
+              }
+              
+              function hideSfpStatus() {
+                sfpStatusPopDom.style.opacity = '0';
+                setTimeout(() => {
+                  sfpStatusPopDom.style.display = 'none';
+                }, 250)
+              }
+            </script>
+            <b style="cursor:pointer;" onmouseover="showDaemonSync()" onmouseout="hideDaemonSync()">
+              <span class="badge bg-secondary" style="background-color:#5894e3;" id="daemonStatus">Daemon Disconnected</span>
+            </b>
+            <div class="daemonSyncPopup" id="daemonSync" style="opacity:0;">
+              <span id="syncingHeightSync">-</span> / <span id="networkHeightSync">-</span>
+            </div>
+            <script>
+              daemonSyncDom = document.getElementById('daemonSync');
+              function showDaemonSync() {
+                daemonSyncDom.style.opacity = '1';
+              }
+              
+              function hideDaemonSync() {
+                daemonSyncDom.style.opacity = '0';
+              }
+            </script>
           </div>
         </div>
         
       </div>
-
-      <!--<ul class="list-unstyled CTAs">
-        <li>
-          <a href="#" class="download">Settings</a>
-        </li>
-      </ul>-->
     </nav>
 
     <!-- Page Content  -->
@@ -105,7 +132,7 @@
               </div>
             </div>
 
-            <div class="wallet-card-bg wallet-card-disabled" onclick="switchCoin(this)" onmouseenter="hoverCoin(this, true)" onmouseleave="hoverCoin(this, false)" id="btc">
+            <!--<div class="wallet-card-bg wallet-card-disabled" onclick="switchCoin(this)" onmouseenter="hoverCoin(this, true)" onmouseleave="hoverCoin(this, false)" id="btc">
               <div class="wallet-card">
                 <div class="wallet-wrapper">
                   <div class="unlockedBalance">
@@ -135,20 +162,16 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div>-->
           </div>
 
         </div>
 
         <div class="rest-content d-none" id="dashboardPage">
           <div style="width:calc(100% - 32px); margin-left:16px;">
-            <div class="">
-              <button class="btn btn-success">Send</button>
-              <button class="btn btn-success">Receive</button>
-            </div>
 
             <div class="transactions">
-              <div id="data-container" style="height: 296px;overflow:auto;margin-left: -16px;margin-right: -16px;margin-top: 13px;"></div>
+              <div id="data-container" style="height: 382px;overflow:auto;margin-left: -16px;margin-right: -16px;margin-top: 13px;"></div>
               <div id="pagination-container"></div>
             </div>
 
@@ -158,12 +181,82 @@
 
         <div class="rest-content d-none" id="sendPage">
           <div style="width:calc(100% - 32px); margin-left:16px;">
+
+            <div class="row">
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Coin/Token *</span>
+                  <select class="form-select" id="tokenCoinList" onchange="changeTokenSend(this)">
+                    <option value='snw' selected>Snowflake (SNW)</option>
+                  </select>
+                  <span class="starRed">* Make sure to use the correct coin or token</span>
+                </div>
+              </div>
+
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Balance</span><br>
+                  <span id="sendingName" class="fw-bold sendBalance">-</span><br>
+                  <span style="cursor:pointer" onclick="sendAllBal()"><span id="sendingBalance" class="balanceNo fw-bold">-</span> <span id="sendingTicker" class="fw-bold sendBalance"></span></span>
+                </div>
+              </div>
+
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Wallet address *</span>
+                  <input type="text" class="form-control" placeholder="Enter a Snowflake address" maxlength="98" id="sendWalletAddress">
+                </div>
+              </div>
+
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Amount *</span>
+                  <input type="text" class="form-control" placeholder="Enter the amount (eg. 1)" id="sendAmount" oninput="isDecimalKey(this)">
+                </div>
+              </div>
+
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Payment ID</span>
+                  <input type="text" class="form-control" placeholder="Enter a payment ID" maxlength="64" id="sendPaymentID">
+                </div>
+              </div>
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Fee amount *</span>
+                  
+                  <div class="input-group">
+                    <input type="text" class="form-control" value="0.00005" placeholder="Enter the fee amount (eg. 0.00005)" id="sendFeeAmount" oninput="isDecimalKey(this)">
+                    <span class="input-group-text input-group-style">SNW</span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div style="position:absolute; bottom:14px; right:14px;">
+              <button class="btn btn-theme" onclick="sendTx()">Send</button>
+            </div>
+
           </div>
         </div>
 
 
         <div class="rest-content d-none" id="receivePage">
           <div style="width:calc(100% - 32px); margin-left:16px;">
+            <div class="" style="text-align: -webkit-center; width:100%; margin-top:100px;">
+
+              <div id="qrCanvas" class="walletQR"></div>
+
+              <div class="walletAddressBox" onclick="copyInput(document.getElementById('walletAddress'))">
+                <input type="text" class="form-control" id="walletAddress" disabled>
+                <div class="copySign"><i class="fad fa-copy"></i></div>
+              </div>
+              <span class="copiedMessage" id="copiedMessage" onclick="copyInput(document.getElementById('walletAddress'))">Address copied!</span><br>
+
+              <div class="" style="font-size:11px;">*Make sure to only send SNW or tokens within the Snowflake Network to this address.</div>
+            </div>
+            
           </div>
         </div>
 
@@ -171,66 +264,413 @@
         <div class="rest-content d-none" id="tokensPage">
           <div style="width:calc(100% - 32px); margin-left:16px;">
 
-            <table class="table" id="tokensList">
+            <button class="btn btn-theme createTokenBtn mb-2 me-2" onclick="switchPage(document.getElementById('aTokens'), 'createTokenPage')">Create Token</button>
+            <button class="btn btn-theme createTokenBtn mb-2 me-2" onclick="switchPage(document.getElementById('aTokens'), 'manageTokensPage')">Manage Tokens</button>
+            <button class="btn btn-theme createTokenBtn mb-2" onclick="refreshTokens();"><i class="fas fa-sync-alt"></i></button>
+
+            <table class="table tokenTable" id="tokensList">
               <thead>
                 <tr>
                   <th scope="col">Token Name</th>
                   <th scope="col">Balance</th>
-                  <th scope="col">Supply</th>
+                  <th scope="col">Locked Balance</th>
+                  <th scope="col">Max Supply</th>
                   <th scope="col">Circulating Supply</th>
                   <th scope="col">Price</th>
                   <th scope="col">Marketcap</th>
                   <th scope="col">24h Change</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+            
+            <div style="display: flex;" class="alert alert-primary custom-alert mx-0 w-100" id="noTokensAlert" role="alert">
+              No tokens could be displayed
+            </div>
+
+          </div>
+        </div>
+
+
+        <div class="rest-content d-none" id="createTokenPage">
+          <div style="width:calc(100% - 32px); margin-left:16px;">
+
+            <div class="backBtn mb-3 d-inline-flex" onclick="switchPage(document.getElementById('aTokens'), '', true)">
+              <i class="far fa-angle-left"></i>
+            </div>
+            
+            <div class="ms-4 d-inline-flex tokenCostLbl">
+              <span>Price: <font class="tokenPriceStyle"><font id="tokenPrice">-</font> SNW</font></span>
+            </div>
+
+            <div class="row">
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Token name *</span>
+                  <input type="text" class="form-control" oninput="changeCreateTokenValue(this)" id="createTokenName" placeholder="5 - 32 Characters" maxlength="32">
+                </div>
+              </div>
+
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Ticker *</span>
+                  <input type="text" class="form-control" oninput="changeCreateTokenValue(this)" id="createTokenTicker" placeholder="3 - 5 Characters" maxlength="5">
+                </div>
+              </div>
+
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Decimals *</span>
+                  <input type="text" class="form-control" oninput="changeCreateTokenValue(this)" id="createTokenDecimals" placeholder="0 - 10">
+                </div>
+              </div>
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Maximum Supply *</span>
+                  <input type="text" class="form-control" oninput="changeCreateTokenValue(this)" id="createTokenSupply" placeholder="1 - 10000000000">
+                </div>
+              </div>
+
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Mineable</span><br>
+                  <label class="switch mt-1">
+                    <input type="checkbox" id="createTokenMinable">
+                    <span class="slider round"></span>
+                  </label><br>
+                  <span style="font-size:11px;">* Mineable tokens will not have the option to mint any tokens</span>
+                </div>
+              </div>
+              <div class="col-6 px-2 pb-3">
+                <div class="formElement">
+                  <span style="font-size:11px;">Token Type *</span>
+                  <select class="form-select mt-1 mb-1" id="createTokenType">
+                    <option value="-1" selected disabled>-</option>
+                    <option value="0">Community</option>
+                    <option value="1">Private</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div style="position:absolute; bottom:14px; right:14px;">
+              <button class="btn btn-theme" onclick="createToken()">Create</button>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="rest-content d-none" id="manageTokensPage">
+          <div style="width:calc(100% - 32px); margin-left:16px;">
+
+            <div class="backBtn d-inline-flex" style="margin-bottom: 9px" onclick="switchPage(document.getElementById('aTokens'), '', true)">
+              <i class="far fa-angle-left"></i>
+            </div>
+
+            <table class="table tokenTable" id="myTokenList">
+              <thead>
+                <tr>
+                  <th scope="col">Token Name</th>
+                  <th scope="col">Balance</th>
+                  <th scope="col">Locked Balance</th>
+                  <th scope="col">Max Supply</th>
+                  <th scope="col">Circulating Supply</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Marketcap</th>
+                  <th scope="col">24h Change</th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
               </tbody>
             </table>
 
+            <div style="display: flex;" class="alert alert-primary custom-alert mx-0 w-100" id="noMyTokensAlert" role="alert">
+              You currently have no tokens
+            </div>
+
           </div>
         </div>
-
-
-
+        
         <div class="rest-content d-none" id="settingsPage">
           <div style="width:calc(100% - 32px); margin-left:16px;">
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab" aria-controls="general" aria-selected="true">General</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="appearance-tab" data-bs-toggle="tab" data-bs-target="#appearance" type="button" role="tab" aria-controls="appearance" aria-selected="false">Appearance</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="wallet-tab" data-bs-toggle="tab" data-bs-target="#wallet" type="button" role="tab" aria-controls="wallet" aria-selected="false">Wallet</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="connection-tab" data-bs-toggle="tab" data-bs-target="#connection" type="button" role="tab" aria-controls="connection" aria-selected="false">Connection</button>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
+                
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <b>Sounds</b>
+                    <p class="pSettings mb-0" style="font-size:11px;">Enable or disable sounds for incomming transactions</p>
+                  </div>
+                  <div class="col-6 d-flex" style="align-items: center;">
+                    <label class="switch">
+                      <input type="checkbox" id="soundSwitcher" onchange="changeSounds(this)">
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                </div>
+                <hr style="background-color:#c7c7c7; margin-top:10px; margin-bottom:10px;">
+
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <b>Update</b>
+                    <p class="pSettings mb-0" style="font-size:11px;">Check for updates</p>
+                  </div>
+                  <div class="col-6 d-flex" style="align-items: center;">
+                    <button class="btn btn-theme" style="font-size: 14px; padding: 4px 8px;" onclick="checkUpdate()">Check</button>
+                  </div>
+                </div>
+                <hr style="background-color:#c7c7c7; margin-top:10px; margin-bottom:10px;">
+
+              </div>
+              <div class="tab-pane fade" id="appearance" role="tabpanel" aria-labelledby="appearance-tab">
+                
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <b>Darkmode</b>
+                    <p class="pSettings mb-0" style="font-size:11px;">Enable dark mode and make sure you will not get blinded in the dark</p>
+                  </div>
+                  <div class="col-6 d-flex" style="align-items: center;">
+                    <label class="switch">
+                      <input type="checkbox" id="darkModeSwitcher" onchange="changeDarkMode(this)">
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                </div>
+                <hr style="background-color:#c7c7c7; margin-top:10px; margin-bottom:10px;">
+
+              </div>
+              <div class="tab-pane fade" id="wallet" role="tabpanel" aria-labelledby="wallet-tab">
+                
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <b>Resync</b>
+                    <p class="pSettings mb-0" style="font-size:11px;">Resync your wallet from block 0</p>
+                  </div>
+                  <div class="col-6 d-flex" style="align-items: center;">
+                    <button class="btn btn-theme" style="font-size: 14px; padding: 4px 8px;" onclick="resyncWallet()">Resync</button>
+                  </div>
+                </div>
+                <hr style="background-color:#c7c7c7; margin-top:10px; margin-bottom:10px;">
+                
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <b>Resync from creation</b>
+                    <p class="pSettings mb-0" style="font-size:11px;">Resync your wallet from the moment you created it</p>
+                  </div>
+                  <div class="col-6 d-flex" style="align-items: center;">
+                    <button class="btn btn-theme" style="font-size: 14px; padding: 4px 8px;" onclick="resetWallet()">Resync</button>
+                  </div>
+                </div>
+                <hr style="background-color:#c7c7c7; margin-top:10px; margin-bottom:10px;">
+                
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <b>Rewind</b>
+                    <p class="pSettings mb-0" style="font-size:11px;" >Rewind your wallet 1000 blocks back</p>
+                  </div>
+                  <div class="col-6 d-flex" style="align-items: center;">
+                    <button class="btn btn-theme" style="font-size: 14px; padding: 4px 8px;" onclick="rewindWallet()">Rewind</button>
+                  </div>
+                </div>
+                <hr style="background-color:#c7c7c7; margin-top:10px; margin-bottom:10px;">
+
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <b>Fiat Currency</b>
+                    <p class="pSettings mb-0" style="font-size:11px;">Select your fiat currency to show in the wallet</p>
+                  </div>
+                  <div class="col-6 d-flex" style="align-items: center;">
+                    
+                    <select class="form-select form-select-style" id="currencySelector" style="font-size: 12px;" onchange="currencyChange(this)">
+                      <option selected value="USD">USD ($)</option>
+                      <option value="EUR">EUR (€)</option>
+                      <option value="GBP">GBP (£)</option>
+                      <option value="JPY">JPY (¥)</option>
+                      <option value="AUD">AUD (A$)</option>
+                      <option value="CAD">CAD (C$)</option>
+                      <option value="HKD">HKD (HK$)</option>
+                      <option value="SEK">SEK (kr)</option>
+                      <option value="KRW">KRW (₩)</option>
+                    </select>
+
+                  </div>
+                </div>
+                <hr style="background-color:#c7c7c7; margin-top:10px; margin-bottom:10px;">
+
+              </div>
+              <div class="tab-pane fade" id="connection" role="tabpanel" aria-labelledby="connection-tab">
+                
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <b>SFP Node address</b>
+                    <p class="pSettings mb-0" style="font-size:11px;">Change the SFP Node address</p>
+                  </div>
+                  <div class="col-6 d-flex" style="align-items: center;">
+                    <input type="text" class="form-control form-control-style me-2" style="font-size:13px;" id="sfpNodeAddress" placeholder="snowflake-net.com:22104">
+                    <button class="btn btn-theme" style="font-size: 14px; padding: 5px 8px;" onclick="switchSFP()">Connect</button>
+                  </div>
+                </div>
+                <hr style="background-color:#c7c7c7; margin-top:10px; margin-bottom:10px;">
+
+                <div class="row mt-3">
+                  <div class="col-6">
+                    <b>Daemon address</b>
+                    <p class="pSettings mb-0" style="font-size:11px;">Change the Daemon address</p>
+                  </div>
+                  <div class="col-6 d-flex" style="align-items: center;">
+                    <input type="text" class="form-control form-control-style me-2" style="font-size:13px;" id="daemonAddress" placeholder="snowflake-net.com:22101">
+                    <button class="btn btn-theme" style="font-size: 14px; padding: 5px 8px;" onclick="switchDaemon()">Connect</button>
+                  </div>
+                </div>
+                <hr style="background-color:#c7c7c7; margin-top:10px; margin-bottom:10px;">
+              </div>
+            </div>
+
           </div>
         </div>
 
+        <div class="modal fade" id="createTokenModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-color:#e9e9e9; border-radius: 6px;">
+              <div class="modal-header" style="border-bottom: 0px;">
+                <h5 style="font-size: 18px;" class="modal-title fw-bold">Confirm token creation</h5>
+                <button type="button" style="font-size: 9px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-4">
+                    <b>Token Name:</b><br>
+                    <b>Ticker:</b><br>
+                    <b>Decimals:</b><br>
+                    <b>Maximum Supply:</b><br>
+                    <b>Mineable:</b><br>
+                    <b>Token Type:</b><br>
+                    <b>Payment amount:</b><br>
+                  </div>
+                  <div class="col-8" class="createTokenConfirmRight">
+                    <span id="createTokenNameVb">-</span><br>
+                    <span id="createTickerVb">-</span><br>
+                    <span id="createDecimalsVb">-</span><br>
+                    <span id="createMaximumSupplyVb">-</span><br>
+                    <span id="createMineableVb">-</span><br>
+                    <span id="createTokenTypeVb">-</span><br>
+                    <span class="balanceNo fw-bold"><span id="createPaymentAmountVb">-</span> SNW</span>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer createTokenConfirmBottom">
+                <span style="font-size:11px">*By clicking `Create token` you agree with our terms of service to create a token using the Snowflake Protocol.</span>
+                <button type="button" style="padding: 3px 11px; font-size: 14px;" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" style="padding: 3px 8px; font-size: 14px;" class="btn btn-theme" onclick="confirmCreateToken()">Create token</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <div class="modal fade" id="sendTxModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-color:#e9e9e9; border-radius: 6px;">
+              <div class="modal-header" style="border-bottom: 0px;">
+                <h5 style="font-size: 18px;" class="modal-title fw-bold">Confirm Transaction</h5>
+                <button type="button" style="font-size: 9px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-4">
+                    <b>Coin/Token Name:</b><br>
+                    <b>Fee:</b><br>
+                    <b>Amount:</b><br>
+                    <b>Total:</b><br>
+                  </div>
+                  <div class="col-8" class="createTokenConfirmRight">
+                    <span id="sendTxCoinToken">Snowflake (SNW)</span><br>
+                    <span class="balanceNo fw-bold"><span id="sendTxFee">-</span> SNW</span><br>
+                    <span class="balanceNo fw-bold"><span id="sendTxAmount">-</span></span><br>
+                    <span class="balanceNo fw-bold"><span id="sendTxTotal">-</span></span>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer createTokenConfirmBottom">
+                <span style="font-size:11px">*By clicking `Send`, the transaction cannot be reversed. Please check all values to avoid losing your funds.</span>
+                <button type="button" style="padding: 3px 11px; font-size: 14px;" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" style="padding: 3px 8px; font-size: 14px;" class="btn btn-theme" onclick="sendTxConfirm()">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <div class="modal fade" id="mintTokenModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-color:#e9e9e9; border-radius: 6px;">
+              <div class="modal-header" style="border-bottom: 0px;">
+                <h5 style="font-size: 18px;" class="modal-title fw-bold">Mint tokens</h5>
+                <button type="button" style="font-size: 9px;" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-4">
+                    <b>Token Name:</b><br>
+                    <b>Max amount:</b><br>
+                    <b>Amount:</b><br>
+                  </div>
+                  <div class="col-8" class="createTokenConfirmRight">
+                    <span id="mintTokenName">-</span><br>
+                    <span id="mintTokenMax" class="balanceNo fw-bold" onclick="mintAllBal()">-</span><br>
+                    <input class="form-control inputMint" type="text" oninput="isDecimalKey(this)" id="mintingAmount" placeholder="Enter the amount">
+                    <input type="hidden" id="mintingTokenHash" disabled>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer createTokenConfirmBottom">
+                <button type="button" style="padding: 3px 11px; font-size: 14px;" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" style="padding: 3px 8px; font-size: 14px;" class="btn btn-theme" onclick="mintTokenConfirm()">Mint</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
       </div>
     </div>
   </div>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
   <script src="https://cdn.jsdelivr.net/jquery.mcustomscrollbar/3.0.6/jquery.mCustomScrollbar.concat.min.js" type="text/javascript"></script>
-
-
 
   <script src="js/bootstrap.bundle.min.js"></script>
   <script src="js/popper.min.js"></script>
   <script src="js/pagination.js"></script>
   <script src="js/socket.io.js"></script>
   <script src="js/pretty.js"></script>
+  <script src="js/moment.js"></script>
 
-  <script src="js/pageSwitcher.js"></script>
-  <script src="js/currencyUpdates.js"></script>
+  <script src="js/core.js"></script>
   <script src="js/backend/backend.js"></script>
+  <script src="js/pageSwitcher.js"></script>
   <script src="js/switchCoin.js"></script>
-
-  <script>
-    /* $(document).ready(function () {
-      $("#sidebar").mCustomScrollbar({
-        theme: "minimal"
-      });
-
-      $('#sidebarCollapse').on('click', function () {
-        $('#sidebar, #content').toggleClass('active');
-        $('.collapse.in').toggleClass('in');
-        $('a[aria-expanded=true]').attr('aria-expanded', 'false');
-      });
-    }); */
-  </script>
+  <script src="js/createToken.js"></script>
+  
+  <div class="notify-message" id="notify-message" onclick="hideNotify()">
+    <i id="notify-message-type-icon" style="margin-right: 5px; margin-left: 5px;"></i> <span style="font-weight:bold;" id="notify-message-type">-</span><br>
+    <span style="font-size: 13px;" id="notify-message-text"></span>
+  </div>
 </body>
 
 </html>
