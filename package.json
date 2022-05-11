@@ -1,7 +1,8 @@
 {
   "name": "snowflake-frost-wallet",
   "version": "1.0.0",
-  "description": "",
+  "description": "Snowflake Frost Wallet is a Semi Smart Contracts compatible wallet for Snowflake Network.",
+  "homepage": "https://snowflake-net.com",
   "main": "main.js",
   "scripts": {
     "start": "npm run electron",
