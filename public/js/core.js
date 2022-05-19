@@ -2,7 +2,7 @@
 function timestampDate(timestamp) {
 	let date = new Date(timestamp * 1000);
 	return {
-		month: date.toLocaleString('default', { month: 'long' }).substring(0, 3),
+		month: date.toLocaleString('en-US', { month: 'long' }).substring(0, 3),
 		day: date.getDate()
 	};
 }
