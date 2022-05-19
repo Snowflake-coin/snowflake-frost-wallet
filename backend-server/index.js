@@ -334,7 +334,8 @@ let sfpConnected = false;
             logger.debug(socket, `Switching SFP Node to: ${data.sfpAddress}`)
           }
         }
-        socket.emit("switchNode");
+
+        checkProtocols();
       }
     });
 
