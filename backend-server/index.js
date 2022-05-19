@@ -210,16 +210,22 @@ let sfpConnected = false;
             return;
           }
 
-          /* Create transaction using SFP */
-          const createTransaction = await Core.sfp_api('/transaction/send', {
-            token_hash: data.coinToken,
-            sign_key: hashedPrivKey,
-            to_address: data.address,
-            amount: (data.amount * (10**sendToken.decimals))
-          });
-
-          console.log(createTransaction);
-          console.log(data);
+          let createTransaction; 
+          try {
+            /* Create transaction using SFP */
+            createTransaction = await Core.sfp_api('/transaction/send', {
+              token_hash: data.coinToken,
+              sign_key: hashedPrivKey,
+              to_address: data.address,
+              amount: (data.amount * (10**sendToken.decimals))
+            });
+          } catch(e) {
+            socket.emit("sendTransaction", {
+              status: "error",
+              message: "SFP Node is unreachable. Please wait a while or contact the discord server."
+            });
+            return;
+          }
 
           /* Check if SFP request has error */
           if("error" in createTransaction.result) {
