@@ -291,7 +291,7 @@
               html += '<li class="' + classPrefix + '-next J-paginationjs-next" data-num="' + (currentPage + 1) + '" title="Next page"><a href="' + pageLink + '">' + nextText + '<\/a><\/li>';
             }
           }
-          html += '<\/ul><\/div>';
+          html += '<\/ul><\/div> <button class="btn btn-theme ms-2" onclick="refreshTransactions();" style="border-radius:3px; padding:4px 10px; font-size:13px;"><i class="fas fa-sync-alt"></i></button>';
         }
 
         // Whether to display the navigator
