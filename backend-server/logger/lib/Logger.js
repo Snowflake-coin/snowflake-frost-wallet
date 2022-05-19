@@ -53,6 +53,7 @@ module.exports = class Logger {
         if (s < this._severity) {
             return;
         }
+        let datetime = new Date();
 
         const paddedCategory = this._category.padEnd(longestCategory, ' ');
         const paddedSeverity = Severity[s].padEnd(5, ' ');
@@ -73,8 +74,8 @@ module.exports = class Logger {
             )
             .join(' ')
             .split('\n')
-            .map((line) => `${category} [${severity}] ${line}`);
-            socket.emit('sendLog', `${paddedCategory} [${paddedSeverity}] ${args}`)
+            .map((line) => `${category} [${datetime.toISOString().split('T')[0]} ${datetime.toISOString().split('T')[1].slice(0, -1)}] [${severity}] ${line}`);
+            socket.emit('sendLog', `${paddedCategory} [${datetime.toISOString().split('T')[0]} ${datetime.toISOString().split('T')[1].slice(0, -1)}] [${paddedSeverity}] ${args}`)
 
         this._log(s, lines.join('\n'));
     }
