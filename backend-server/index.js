@@ -349,8 +349,16 @@ let sfpConnected = false;
           const privateViewKey = wallet.getPrivateViewKey();
           const [publicSpendKey, privateSpendKey, err] = await wallet.getSpendKeys(wallet.getAddresses()[0]);
 
+          let activation;
           /* Do request to SFP Node */
-          const activation = await Core.sfp_api('/wallet/activate', { private_spend_key: privateSpendKey, private_view_key: privateViewKey });
+          try {
+            activation = await Core.sfp_api('/wallet/activate', { private_spend_key: privateSpendKey, private_view_key: privateViewKey });
+          } catch (e) {
+            socket.emit("sfpActivateWallet", {
+              activation_success: false
+            });
+            return;
+          }
           logger_sfp.debug(io, `Address activation success: ${activation.result.success}`);
 
           /* Activate wallet on SFP */
