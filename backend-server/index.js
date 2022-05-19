@@ -24,6 +24,7 @@ let secKey = '';
 let allTokensArr = [];
 let tokenPriceGlob = 0;
 let hashedPrivKey;
+let sfpConnected = false;
 
 (async() => {
   /* Socket requests */
@@ -84,26 +85,30 @@ let hashedPrivKey;
           let token_hash = "";
           let token_amount = "";
           let token_to_address = "";
+          let token_payment = "";
 
           if(!(transactions[tx].paymentID == "")) {
             let txSFP;
-            try {
-              txSFP = await Core.sfp_api(`/transaction/${transactions[tx].paymentID}`, '');
-
-              if(txSFP.status == "ok") {
-                token_hash = txSFP.result.token_hash;
-                token_amount = txSFP.result.amount;
-                token_to_address = txSFP.result.to_address;
+            if(sfpConnected) {
+              try {
+                txSFP = await Core.sfp_api(`/transaction/${transactions[tx].paymentID}`, '');
+              
+                if(txSFP.result.token_payment == false) {
+                  /* Check if status is ok */
+                  if(txSFP.status == "ok") {
+                    token_hash = txSFP.result.token_hash;
+                    token_amount = txSFP.result.amount;
+                    token_to_address = txSFP.result.to_address;
+                  }
+                } else {
+                  token_payment = txSFP.result.token_hash;
+                }
+                /* Return connection success */
+                logger_sfp.debug(io, `Request '/${Config.sfpVersion}/transaction/${transactions[tx].paymentID}' success request`);
+              } catch(e) {
+                /* Return connection success */
+                logger_sfp.debug(io, `Request '/${Config.sfpVersion}/transaction/${transactions[tx].paymentID}' failed to SFP Node`);
               }
-          
-              /* Return connection success */
-              socket.emit("sfpConnection", true);
-              logger_sfp.debug(io, `Request '/${Config.sfpVersion}/transaction/${transactions[tx].paymentID}' success request`);
-            } catch(e) {
-              logger_sfp.error(socket, `Request '/${Config.sfpVersion}/transaction/${transactions[tx].paymentID}' failed to SFP Node`);
-    
-              /* Return connection failed */
-              socket.emit("sfpConnection", false);
             }
           }
 
@@ -113,6 +118,7 @@ let hashedPrivKey;
               publicKey: txs
             });
           }
+          
 
           newTransactions.push({
             transfers: newTransfers,
@@ -126,6 +132,7 @@ let hashedPrivKey;
             token_hash: (token_hash == "" ? "" : token_hash),
             token_amount: (token_amount == "" ? "" : token_amount),
             token_to_address: (token_to_address == "" ? "" : token_to_address),
+            token_payment: (token_payment == "" ? "" : token_payment)
           });
         }
         
@@ -612,8 +619,10 @@ let hashedPrivKey;
 
     /* Check sfp connection */
     checkConnection(Config.sfpHostname, Config.sfpPort).then(function() {
+      sfpConnected = true;
       io.emit('sfpConnection', true);
     }, function(err) {
+      sfpConnected = false;
       io.emit('sfpConnection', false);
     });
   }
@@ -677,16 +686,22 @@ let hashedPrivKey;
       let token_hash = "";
       let token_amount = "";
       let token_to_address = "";
+      let token_payment = "";
 
       if(!(transaction.paymentID == "")) {
         let txSFP;
         try {
           txSFP = await Core.sfp_api(`/transaction/${transaction.paymentID}`, '');
 
-          if(txSFP.status == "ok") {
-            token_hash = txSFP.result.token_hash;
-            token_amount = txSFP.result.amount;
-            token_to_address = txSFP.result.to_address;
+          if(txSFP.result.token_payment == false) {
+            /* Check if status is ok */
+            if(txSFP.status == "ok") {
+              token_hash = txSFP.result.token_hash;
+              token_amount = txSFP.result.amount;
+              token_to_address = txSFP.result.to_address;
+            }
+          } else {
+            token_payment = txSFP.result.token_hash;
           }
       
           /* Return connection success */
@@ -719,6 +734,7 @@ let hashedPrivKey;
         token_hash: (token_hash == "" ? "" : token_hash),
         token_amount: (token_amount == "" ? "" : token_amount),
         token_to_address: (token_to_address == "" ? "" : token_to_address),
+        token_payment: (token_payment == "" ? "" : token_payment)
       };
 
       io.emit('getNewTransaction', newTransaction);
@@ -732,16 +748,22 @@ let hashedPrivKey;
       let token_hash = "";
       let token_amount = "";
       let token_to_address = "";
+      let token_payment = "";
 
       if(!(transaction.paymentID == "")) {
         let txSFP;
         try {
           txSFP = await Core.sfp_api(`/transaction/${transaction.paymentID}`, '');
 
-          if(txSFP.status == "ok") {
-            token_hash = txSFP.result.token_hash;
-            token_amount = txSFP.result.amount;
-            token_to_address = txSFP.result.to_address;
+          if(txSFP.result.token_payment == false) {
+            /* Check if status is ok */
+            if(txSFP.status == "ok") {
+              token_hash = txSFP.result.token_hash;
+              token_amount = txSFP.result.amount;
+              token_to_address = txSFP.result.to_address;
+            }
+          } else {
+            token_payment = txSFP.result.token_hash;
           }
       
           /* Return connection success */
@@ -774,6 +796,7 @@ let hashedPrivKey;
         token_hash: (token_hash == "" ? "" : token_hash),
         token_amount: (token_amount == "" ? "" : token_amount),
         token_to_address: (token_to_address == "" ? "" : token_to_address),
+        token_payment: (token_payment == "" ? "" : token_payment)
       };
 
       io.emit('getNewTransaction', newTransaction);
