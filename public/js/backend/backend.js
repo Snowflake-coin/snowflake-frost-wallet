@@ -119,14 +119,14 @@ async function main() {
 	if(settings_db.getData('/dark_mode')) { 
 		document.getElementById('darkModeSwitcher').checked = true;
 		document.getElementById('darkModeCSS').href = `css/style_dark.css`;
-	}
-	document.getElementById('sfpNodeAddress').value = settings_db.getData('/sfp_address');
-	document.getElementById('daemonAddress').value = settings_db.getData('/daemon_address');
-
-	/* Get market data from coinpaprika */
-	let coinPaprikaReq = await fetch(`https://api.coinpaprika.com/v1/coins/snw-snowflake-network/ohlcv/today?quote=btc`, {
-		"method": "GET",
-		"headers": {
+	try {
+		let coinPaprikaReq = await fetch(`https://api.coinpaprika.com/v1/coins/snw-snowflake-network/ohlcv/today?quote=btc`, {
+			"method": "GET",
+			"headers": {
+				"Content-Type": "application/json"
+			}
+		});
+		let coinPaprika = await coinPaprikaReq.json();
 			"Content-Type": "application/json"
 		}
 	});
