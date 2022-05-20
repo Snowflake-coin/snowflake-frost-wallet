@@ -699,6 +699,37 @@ function refreshTransactionsFrontend() {
           if (!transfer.amount == 0) {
 						let momTx = moment.unix(tx.timestamp);
 						
+						let SendAmount;
+						let SendAmountTicker;
+						
+						if(transfer.amount < 0) {
+							/* If transfer is sent */
+							if(tx.token_hash == "") {
+								SendAmount = (transfer.amount / (10 ** 8)).toFixed(8);
+								SendAmountTicker = "SNW";
+							} else {
+								SendAmount = parseInt(-(tx.token_amount / (10 ** allTokensArr[tx.token_hash].decimals))).toFixed(allTokensArr[tx.token_hash].decimals);
+								SendAmountTicker = allTokensArr[tx.token_hash].ticker;
+							}
+						} else {
+							/* If transfer is receive */
+							if(tx.token_hash == "") {
+								SendAmount = '+' + (transfer.amount / (10 ** 8)).toFixed(8);
+								SendAmountTicker = "SNW";
+							} else {
+								SendAmount = '+' + parseInt((tx.token_amount / (10 ** allTokensArr[tx.token_hash].decimals))).toFixed(allTokensArr[tx.token_hash].decimals);
+								SendAmountTicker = allTokensArr[tx.token_hash].ticker;
+							}
+						}
+
+						let TokenPaymentData = "";
+						if(tx.token_payment == "") { } else {
+							if(allTokensArr[tx.token_payment] == undefined) { } else {
+								TokenPaymentData = allTokensArr[tx.token_payment];
+							}
+						}
+						
+
 						dataHtml += `
 						<div class="col-12 px-0 hoverTx" onclick="openDetails(document.getElementById('txDetails${txC}'), this)" id="txDetailsBtn${txC}">
 							<div class="d-inline-flex">
@@ -720,78 +751,7 @@ function refreshTransactionsFrontend() {
 
 							<div style="margin-top: -20px;">
 								<span class="d-flex justify-content-end fw-bold balanceNo" style="position: relative; top: -10px; right:4px;">
-									${(
-										(tx.token_hash == "" ?
-											transfer.amount : 
-											(tx.token_to_address == walletAddressGlobal ?
-												tx.token_amount :
-												-Math.abs(tx.token_amount)
-											)
-										) > 0 ?
-											'+' :
-											''
-									) + 
-									parseInt((
-										(tx.token_hash == "" ?
-											transfer.amount :
-											(tx.token_to_address == walletAddressGlobal ?
-												tx.token_amount :
-												-Math.abs(tx.token_amount)
-											)
-										) /
-										(10 ** 
-											(tx.token_hash == "" ?
-												8 :
-												allTokensArr[tx.token_hash].decimals
-											)
-										)
-									).toFixed(8).split('.')[0]).toLocaleString('en-US', { minimumFractionDigits: 0 }) +
-									
-									(tx.token_hash == "" ?
-										decimalFont(
-											(
-												(tx.token_hash == "" ?
-													transfer.amount :
-													tx.token_amount
-												) /
-												(10 **
-													(tx.token_hash == "" ?
-														8 :
-														allTokensArr[tx.token_hash].decimals
-													)
-												)
-											).toFixed(
-												(tx.token_hash == "" ?
-													8 :
-													allTokensArr[tx.token_hash].decimals
-												)
-											).split('.')[1]
-										) :
-										(allTokensArr[tx.token_hash].decimals == 0 ? '' : 
-											decimalFont(
-												(
-													(tx.token_hash == "" ?
-														transfer.amount :
-														tx.token_amount
-													) /
-													(10 **
-														(tx.token_hash == "" ?
-															8 :
-															allTokensArr[tx.token_hash].decimals
-														)
-													)
-												).toFixed(
-													(tx.token_hash == "" ?
-														8 :
-														allTokensArr[tx.token_hash].decimals
-													)
-												).split('.')[1]
-											)
-										)
-									)
-								}
-									
-									${(tx.token_hash == "" ? "SNW" : allTokensArr[tx.token_hash].ticker)}
+									${SendAmount.split('.')[0] + decimalFont(SendAmount.split('.')[1])} ${SendAmountTicker}
 								</span>
 							</div>
 						</div>
@@ -805,15 +765,17 @@ function refreshTransactionsFrontend() {
 											Height:<br>
 											Amount:<br>
 											Fee:<br>
-											Creation Time:
+											Creation Time:${(TokenPaymentData == "" ? '' : `<br>
+											Description:`)}
 										</div>
 										<div style="">
 											<a href="#" class="linkStyle" onclick="shell.openExternal('https://explorer.snowflake-net.com/transaction.html?hash=${(tx.token_hash == "" ? tx.hash : tx.paymentID)}')">${(tx.token_hash == "" ? tx.hash : tx.paymentID)}</a><br>
 											${(tx.paymentID == "" ? '-' : (tx.token_hash == "" ? tx.paymentID : '-'))}<br>
 											${tx.blockHeight.toLocaleString('en-US')}<br>
-											<span class="balanceNo" style="font-weight:bold;">${((tx.token_hash == "" ? transfer.amount : tx.token_amount) > 0 ? '+' : '') + parseInt(((tx.token_hash == "" ? transfer.amount : tx.token_amount) / (10 ** (tx.token_hash == "" ? 8 : allTokensArr[tx.token_hash].decimals) )).toFixed((tx.token_hash == "" ? 8 : allTokensArr[tx.token_hash].decimals)).split('.')[0]).toLocaleString('en-US', { minimumFractionDigits: 0 }) + (tx.token_hash == "" ? decimalFont(((tx.token_hash == "" ? transfer.amount : tx.token_amount) / (10 ** (tx.token_hash == "" ? 8 : allTokensArr[tx.token_hash].decimals) )).toFixed((tx.token_hash == "" ? 8 : allTokensArr[tx.token_hash].decimals)).split('.')[1]) : (allTokensArr[tx.token_hash].decimals == 0 ? '' : decimalFont(((tx.token_hash == "" ? transfer.amount : tx.token_amount) / (10 ** (tx.token_hash == "" ? 8 : allTokensArr[tx.token_hash].decimals) )).toFixed((tx.token_hash == "" ? 8 : allTokensArr[tx.token_hash].decimals)).split('.')[1])) )} ${(tx.token_hash == "" ? "SNW" : allTokensArr[tx.token_hash].ticker)} ${(tx.token_hash == "" ? `<span class="fiatPrice">(${globalFormatter.format(Math.abs(parseFloat(pricePerSNW) * (transfer.amount / (10 ** (tx.token_hash == "" ? 8 : allTokensArr[tx.token_hash].decimals) ))))})</span>` : '')} <br></span>
+											<span class="balanceNo" style="font-weight:bold;">${SendAmount.split('.')[0] + decimalFont(SendAmount.split('.')[1])} ${SendAmountTicker} ${(tx.token_hash == "" ? `<span class="fiatPrice">(${globalFormatter.format(Math.abs(parseFloat(pricePerSNW) * (transfer.amount / (10 ** (tx.token_hash == "" ? 8 : allTokensArr[tx.token_hash].decimals) ))))})</span>` : '')} <br></span>
 											<span class="balanceNo" style="font-weight:bold;">${(tx.fee / (10 ** 8)).toFixed(8).split('.')[0] + decimalFont((tx.fee / (10 ** 8)).toFixed(8).split('.')[1])} SNW<br></span>
-											${momTx.format('YYYY-MM-DD hh:mm A')}<br>
+											${momTx.format('YYYY-MM-DD hh:mm A')}<br>${(TokenPaymentData == "" ? '' : `
+											Activation payment for '<b>${TokenPaymentData.name} (${TokenPaymentData.ticker})</b>'`)}
 										</div>
 									</div>
 							</div>
