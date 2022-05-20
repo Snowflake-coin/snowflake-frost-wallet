@@ -1141,3 +1141,9 @@ function mintTokenConfirm() {
 
 	refreshTokensAndBalance();
 }
+
+function refreshTransactions() {
+	socket.emit('getTransactions', { key: secKey });
+
+	notify('Transactions refreshed!', '', 3);
+}
