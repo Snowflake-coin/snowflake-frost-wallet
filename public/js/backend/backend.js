@@ -371,8 +371,16 @@ socket.on('getSyncStatus', (data) => {
 	/* If syncing is done, change popup color */
 	if(data.syncingHeightSync >= data.networkHeightSync) {
 		daemonSyncDom.classList.add('done');
+		document.getElementById('sendTxBtn').disabled = false;
+		document.getElementById('mintTokenBtn').disabled = false;
+		document.getElementById('createTokenBtn').disabled = false;
+		globalSyncing = false;
 	} else {
 		daemonSyncDom.classList.remove('done');
+		document.getElementById('sendTxBtn').disabled = true;
+		document.getElementById('mintTokenBtn').disabled = true;
+		document.getElementById('createTokenBtn').disabled = true;
+		globalSyncing = true;
 	}
 
 	/* Check if values are the same, else don't update */
