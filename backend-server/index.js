@@ -619,7 +619,7 @@ let sfpConnected = false;
   /* Check connection of a hostname and port */
   function checkConnection(host, port, timeout) {
     return new Promise(function(resolve, reject) {
-        timeout = timeout || 1000;     // default of 10 seconds
+        timeout = timeout || 3000;     // default of 10 seconds
         var timer = setTimeout(function() {
             reject("timeout");
             socket.end();
