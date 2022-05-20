@@ -589,7 +589,11 @@ socket.on('sfpMintTokens', async (data) => {
 		notify("Minting done. Waiting for transaction confirmations.", "", 3);
 		refreshTokensAndBalance();
 	} else {
-		notify("Cannot create more tokens than maximum supply.", "error", 3);
+		if(data.error == 1) {
+			notify("Cannot create more tokens than maximum supply.", "error", 3);
+		} else if(data.error == 2) {
+			notify("SFP Node is unreachable. Please wait a while or contact the discord server.", "error", 3);
+		}
 	}
 });
 
