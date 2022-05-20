@@ -23,6 +23,7 @@ let allTokensBalancesArr;
 let coinBalanceObj;
 let walletAddressGlobal;
 let sfpConnection = false;
+let globalSyncing = true;
 
 const tokensListDom = document.getElementById('tokensList').getElementsByTagName('tbody')[0];
 const myTokensListDom = document.getElementById('myTokenList').getElementsByTagName('tbody')[0];
@@ -54,17 +55,6 @@ $('#closeWindow').on('click', function () {
 });
 
 
-$(document).ready(function() {
-	/* Switch nodes in daemon */
-	setTimeout(() => {
-		socket.emit('switchNode', {
-			key: secKey,
-			daemonAddress: settings_db.getData('/daemon_address'),
-			sfpAddress: settings_db.getData('/sfp_address')
-		});
-	}, 1000);
-});
-
 
 /* main() */
 async function main() {
@@ -94,22 +84,12 @@ async function main() {
 		key: secKey
 	});
 
-	/* Get tokens, mytokes and balances from SFP node */
-	refreshTokensAndBalance();
-
-	
-
 	/* If wallet is not activated, activate it */
 	if(wallet_db.getData("/sfp_activated") == false) {
 		socket.emit('sfpActivateWallet', {
 			key: secKey
 		});
 	}
-
-	/* Get all transactions from Snowflake Wallet */
-	socket.emit('getTransactions', {
-		key: secKey
-	});
 
 	/* Get current connection status */
 	socket.emit("getConnectionStatus");
@@ -123,6 +103,7 @@ async function main() {
 	document.getElementById('sfpNodeAddress').value = settings_db.getData('/sfp_address');
 	document.getElementById('daemonAddress').value = settings_db.getData('/daemon_address');
 
+	/* Get market data from coinpaprika */
 	try {
 		let coinPaprikaReq = await fetch(`https://api.coinpaprika.com/v1/coins/snw-snowflake-network/ohlcv/today?quote=btc`, {
 			"method": "GET",
@@ -131,11 +112,6 @@ async function main() {
 			}
 		});
 		let coinPaprika = await coinPaprikaReq.json();
-			"Content-Type": "application/json"
-		}
-	});
-	let coinPaprika = await coinPaprikaReq.json();
-	try {
 		pricePerSNWinBTC = parseFloat(coinPaprika[0].close);
 	} catch(e) {
 		pricePerSNWinBTC = 0;
@@ -160,11 +136,10 @@ async function main() {
 
 
 	/* Get token create price every minute */
-	function getTokenPrice() { socket.emit("sfpTokenPrice", { key: secKey }); }
 	setInterval(() => {
-		getTokenPrice()
+		socket.emit("sfpTokenPrice", { key: secKey });
 	}, 60 * 1000);
-	getTokenPrice();
+	socket.emit("sfpTokenPrice", { key: secKey });
 
 	/* Get balance every 15 seconds 
 	 * Also check connection */
@@ -187,24 +162,18 @@ async function main() {
 	setInterval(() => {
 		socket.emit('saveWallet');
 	}, 60 * 1000);
-}
-main();
 
-
-
-socket.on('switchNode', (data) => {
-	/* Activate Wallet */
-	socket.emit('sfpActivateWallet', {
-		key: secKey
+	/* Switch node */
+	socket.emit('switchNode', {
+		key: secKey,
+		daemonAddress: settings_db.getData('/daemon_address'),
+		sfpAddress: settings_db.getData('/sfp_address')
 	});
 
-	/* Get tokens, mytokes and balances from SFP node */
-	refreshTokensAndBalance();
-
-	setTimeout(() => {
-		socket.emit("getTransactions", { key: secKey });
-	}, 1000);
-});
+	
+	socket.emit('getTransactions', { key: secKey });
+}
+main();
 
 socket.on('sendLog', (data) => {
 	console.log(data);
@@ -218,11 +187,6 @@ socket.on('getWalletAddress', (data) => {
 		document.getElementById('qrCanvas').innerHTML = `<div class='crop'><img src='${url}'></div>`;
 	});
 	document.getElementById('walletAddress').value = data.address;
-});
-
-/* Get private keys */
-socket.on('getPrivKeys', async (data) => {
-	// TODO: Add private keys handler
 });
 
 /* Get balance */
@@ -930,18 +894,18 @@ function changeSounds(dom) {
 }
 
 function resyncWallet() {
-	notify("Wallet is resyncing...", '', 3)
-	socket.emit('resyncWallet', { key: secKey })
+	notify("Wallet is resyncing...", '', 3);
+	socket.emit('resyncWallet', { key: secKey });
 }
 
 function resetWallet() {
-	notify("Wallet is resyncing...", '', 3)
-	socket.emit('resetWallet', { key: secKey })
+	notify("Wallet is resyncing...", '', 3);
+	socket.emit('resetWallet', { key: secKey });
 }
 
 function rewindWallet() {
-	notify("Wallet is rewinding 1000 blocks...", '', 3)
-	socket.emit('rewindWallet', { key: secKey })
+	notify("Wallet is rewinding 1000 blocks...", '', 3);
+	socket.emit('rewindWallet', { key: secKey });
 }
 
 function switchSFP() {
