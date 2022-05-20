@@ -577,24 +577,38 @@ let sfpConnected = false;
     /* SFP: Mint tokens */
     socket.on("sfpMintTokens", async data => {
       if(secKey == data.key) {
-        /* Get my tokens from SFP Node */
-        const mintTokens = await Core.sfp_api('/transaction/mint', {
-          token_hash: data.token_hash,
-          sign_key: hashedPrivKey,
-          amount: parseInt(data.amount)
-        });
+        try {
+          /* Get my tokens from SFP Node */
+          const mintTokens = await Core.sfp_api('/transaction/mint', {
+            token_hash: data.token_hash,
+            sign_key: hashedPrivKey,
+            amount: parseInt(data.amount)
+          });
 
-        if("error" in mintTokens.result) {
-          console.log('test')
+          if("error" in mintTokens.result) {
+            socket.emit("sfpMintTokens", {
+              success: false,
+              error: 1
+            });
+            return;
+          }
+
           socket.emit("sfpMintTokens", {
-            success: false
+            success: true
+          });
+        } catch(e) {
+          logger_sfp.error(socket, `Request '/${Config.sfpVersion}/transaction/mint' failed to SFP Node`);
+
+          /* Return connection failed */
+          socket.emit("sfpConnection", false);
+
+          /* Return minting failed */
+          socket.emit("sfpMintTokens", {
+            success: false,
+            error: 2
           });
           return;
         }
-
-        socket.emit("sfpMintTokens", {
-          success: true
-        });
       }
     });
   });
